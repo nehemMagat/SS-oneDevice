@@ -13,10 +13,10 @@ dependencies:
     sdk: flutter
   permission_handler: 
 
-  flutter_blue_plus:
+  flutter_blue_plus: ^1.17.3
     # Note: We use a path dependency because the example app & plugin are bundled together.
     # In *your* app you should use ^1.17.3 or similar 
-    path: ../
+    #path: ../
 
 flutter:
   uses-material-design: true
