@@ -37,6 +37,15 @@ class _MainPage extends State<MainPage> {
   void initState() {
     super.initState();
 
+    // --------------------------INITIALIZATION OF BLE------------------------------------
+
+    Future.doWhile(() async {
+      await CentralManager.instance.setUp();
+      // Wait if adapter not enabled
+      return false;
+      }
+    );  
+
     // -----------------------------BLUETOOTH SERIAL--------------------------------------
     // Get current state
     FlutterBluetoothSerial.instance.state.then((state) {
