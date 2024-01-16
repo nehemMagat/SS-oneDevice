@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+
+import './bleScanPage.dart';
 import './BackgroundCollectedPage.dart';
 import './BackgroundCollectingTask.dart';
 import './ChatPage.dart';
@@ -34,6 +37,7 @@ class _MainPage extends State<MainPage> {
   void initState() {
     super.initState();
 
+    // -----------------------------BLUETOOTH SERIAL--------------------------------------
     // Get current state
     FlutterBluetoothSerial.instance.state.then((state) {
       setState(() {
@@ -236,6 +240,20 @@ class _MainPage extends State<MainPage> {
                   }),
             ),
             ListTile(
+              title:ElevatedButton(
+                child: const Text("BLE Scanning"),
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const ScannerView();
+                        }     
+                      )
+                    );
+                  },
+                )
+            ),
+            ListTile(
               title: ElevatedButton(
                 child: const Text('Connect to paired device to chat'),
                 onPressed: () async {
@@ -257,6 +275,7 @@ class _MainPage extends State<MainPage> {
                 },
               ),
             ),
+            
             Divider(),
             ListTile(title: const Text('Multiple connections example')),
             ListTile(
