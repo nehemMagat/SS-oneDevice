@@ -11,8 +11,8 @@
 */
 
 // I2C SETUP
-constexpr uint8_t I2C_SDA = 38;
-constexpr uint8_t I2C_SCL = 39;
+constexpr uint8_t I2C_SDA_PIN = 38;
+constexpr uint8_t I2C_SCL_PIN = 39;
 
 // FINGER PINS
 constexpr uint8_t PINKYPIN = 4;
@@ -23,3 +23,5 @@ constexpr uint8_t THUMBPIN = 15;
 
 // OTHER VARIABLES
 bool isWireBegun = false;
+constexpr uint8_t arrayLength = 10; //Length of array to be  averaged
+float maxFingerValue = 1024; //max value of finger output for dataset

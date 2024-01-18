@@ -20,7 +20,7 @@ public:
 
   void begin() {
     //if (!isWireBegun) {
-    Wire.begin(I2C_SDA, I2C_SCL);
+    Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
     //} else {
     //  Serial.println("Wire has been initiated, Skipping step.");
     //}
@@ -105,7 +105,7 @@ public:
     return sensorValues;
   }
 
-  void printData(){
+  void printData() {
     updateSensor();
     Serial.print("Accel X: ");
     Serial.print(a.acceleration.x);
