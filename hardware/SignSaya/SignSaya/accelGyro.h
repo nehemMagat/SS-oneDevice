@@ -107,17 +107,17 @@ public:
 
   void printData() {
     updateSensor();
-    Serial.print("Accel X: ");
+    Serial.print("Accel: ");
     Serial.print(a.acceleration.x);
-    Serial.print("  | Accel Y: ");
+    Serial.print(", ");
     Serial.print(a.acceleration.y);
-    Serial.print("  | Accel Z: ");
+    Serial.print(", ");
     Serial.print(a.acceleration.z);
-    Serial.print("  || Gyro X: ");
+    Serial.print("  || Gyro: ");
     Serial.print(a.gyro.x);
-    Serial.print("  | Gyro Y: ");
+    Serial.print(", ");
     Serial.print(a.gyro.y);
-    Serial.print("  | Gyro Z: ");
+    Serial.print(", ");
     Serial.print(a.gyro.z);
     Serial.print("  || Chip Temperature: ");
     Serial.println(temp.temperature);

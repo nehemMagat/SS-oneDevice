@@ -3,8 +3,8 @@
 class FingerInstance {
 private:
   float fingerArray[arrayLength] = {0};
-  float minInputValue = 99999999999;
-  float maxInputValue = 0;
+  float minInputValue = 0;
+  float maxInputValue = 4095;
   uint8_t pinNumber;
   bool calibrationStarted = false;
   float prevMinInputValue = minInputValue;
@@ -13,7 +13,7 @@ private:
   float currentValue = 0;
 
   float mapRead() {
-    return map(analogRead(pinNumber), minInputValue, maxInputValue, 0, maxFingerValue);
+    return map(analogRead(pinNumber), minInputValue, maxInputValue, 0, maxFingerValue)/maxFingerValue;
   }
 
   float movingAverage(float newEntry) {
@@ -41,6 +41,10 @@ public:
   float read() {
     currentValue = mapRead();
     return movingAverage(currentValue);
+  }
+
+  int rawRead(){
+    return analogRead(pinNumber);
   }
 
   void calibrate() {
