@@ -1,4 +1,3 @@
-#include <iterator>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
@@ -18,12 +17,13 @@ public:
   accelSensor() {
   }
 
-  void begin() {
+  void begin(const int SDA_PIN, const int SCL_PIN) {
     //if (!isWireBegun) {
-    Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+    Wire.begin(SDA_PIN, SCL_PIN);
     //} else {
     //  Serial.println("Wire has been initiated, Skipping step.");
     //}
+    Serial.println("Finding MPU6050");
     if (!mpu.begin()) {
       Serial.println("Failed to find MPU6050 chip");
       while (1) {

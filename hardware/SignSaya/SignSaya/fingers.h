@@ -1,5 +1,3 @@
-//#include "config.h"
-
 class FingerInstance {
 private:
   float fingerArray[arrayLength] = {0};
@@ -29,7 +27,7 @@ private:
       fingerArray[index] = fingerArray[index - 1];  // Shift values in the array
       total += fingerArray[index];
     }
-    fingerArray[0] = newEntry;
+    fingerArray[arrayLength-1] = newEntry;
     return total / arrayLength;
   }
 
