@@ -43,7 +43,7 @@ class MyHomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TranslationPage()),
+                          builder: (context) => const TranslationPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -51,7 +51,7 @@ class MyHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text('Get Started'),
+                  child: const Text('Get Started')
                 ),
               ),
             ),

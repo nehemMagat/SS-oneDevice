@@ -11,7 +11,7 @@ class TranslationPage extends StatelessWidget {
         children: [
           // Background Image
           Image.asset(
-            'lib/images/backgroundImage.png',
+            'lib/images/backgroundTranslation.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
