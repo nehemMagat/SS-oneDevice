@@ -132,7 +132,9 @@ class TranslationPage extends StatelessWidget {
             top: 870,
             left: 40,
             child: ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF011F4B),
                 shape: const CircleBorder(),
