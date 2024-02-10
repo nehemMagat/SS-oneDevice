@@ -53,6 +53,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - lib/images/backgroundHome.png
     - lib/images/backgroundTranslation.png
     - lib/images/infoButton.png
     - lib/images/settingsButton.png
