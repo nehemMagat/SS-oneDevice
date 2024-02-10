@@ -51,7 +51,14 @@ class MyHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text('Get Started')
+                  child: const Text(
+                    'Get Started',
+                    style: TextStyle(
+                      fontFamily: 'Intro Rust',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ),
