@@ -1,3 +1,4 @@
+import 'package:SignSaya/pages/information_page.dart';
 import 'package:flutter/material.dart';
 import 'pages/translation_page.dart';
 
@@ -34,7 +35,13 @@ class MyHomePage extends StatelessWidget {
             top: 45,
             right: 0,
             child: ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const InformationPage()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF011F4B),
                 shape: const CircleBorder(),
