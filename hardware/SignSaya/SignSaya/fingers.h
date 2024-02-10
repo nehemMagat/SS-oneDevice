@@ -1,7 +1,7 @@
 class FingerInstance {
 private:
   float fingerArray[arrayLength] = {0};
-  float minInputValue = 3000;
+  float minInputValue = 0;
   float maxInputValue = 4095;
   uint8_t pinNumber;
   bool calibrationStarted = false;
