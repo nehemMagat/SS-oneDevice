@@ -13,17 +13,17 @@
 */
 
 // I2C SETUP
-constexpr int I2C_SDA_PIN = 38; 
-constexpr int I2C_SCL_PIN = 39;
+constexpr int I2C_SDA_PIN = 46; 
+constexpr int I2C_SCL_PIN = 3;
 
 // FINGER PINS
-constexpr int PINKYPIN = 4; //9
-constexpr int RINGPIN = 5; //10
-constexpr int MIDDLEPIN = 6; //11
-constexpr int INDEXPIN = 7; //12
-constexpr int THUMBPIN = 17; //13
+constexpr int PINKYPIN = 9; //9
+constexpr int RINGPIN = 10; //10
+constexpr int MIDDLEPIN = 11; //11
+constexpr int INDEXPIN = 12; //12
+constexpr int THUMBPIN = 13; //13
 
-constexpr bool HANDPIN = 18; //14
+constexpr bool HANDPIN = 7; //14
 constexpr int bluetoothIndicator = 8;
 
 
