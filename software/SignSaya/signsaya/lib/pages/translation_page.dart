@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'bluetooth_connection.dart';
+import 'gloves_calibration.dart';
 
 class TranslationPage extends StatefulWidget {
   const TranslationPage({Key? key}) : super(key: key);
@@ -28,24 +30,13 @@ class _TranslationPageState extends State<TranslationPage> {
             top: 45,
             right: 0,
             child: ElevatedButton(
-              onPressed: null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
-                shape: const CircleBorder(),
-              ),
-              child: Image.asset(
-                'lib/images/infoButton.png',
-                width: 25,
-                height: 25,
-              ),
-            ),
-          ),
-          // Settings Button
-          Positioned(
-            top: 45,
-            left: 0,
-            child: ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GlovesCalibration()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF011F4B),
                 shape: const CircleBorder(),
@@ -57,9 +48,45 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
+          //Connection
+          Positioned(
+            top: 53,
+            left: 0,
+            right: 220,
+            child: Center(
+              child: SizedBox(
+                width: 150,
+                height: 30,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BluetoothConnect()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text(
+                    'Not Connected',
+                    style: TextStyle(
+                      fontFamily: 'Intro Rust',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Settings Button
           // Dropdown List
           Positioned(
-            top: 230,
+            top: 240,
             left: 25,
             child: Container(
               width: 370,
@@ -121,7 +148,7 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // Another Gradient Container
           Positioned(
-            top: 280,
+            top: 290,
             left: 0,
             right: 0,
             child: ElevatedButton(
