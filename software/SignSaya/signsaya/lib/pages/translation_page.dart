@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class TranslationPage extends StatelessWidget {
+class TranslationPage extends StatefulWidget {
   const TranslationPage({Key? key}) : super(key: key);
+
+  @override
+  _TranslationPageState createState() => _TranslationPageState();
+}
+
+class _TranslationPageState extends State<TranslationPage> {
+  String? selectedLanguage;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +62,7 @@ class TranslationPage extends StatelessWidget {
             top: 230,
             left: 25,
             child: Container(
+              width: 370,
               height: 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -62,21 +70,25 @@ class TranslationPage extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 hint: const Text(
-                    "Selaaaaaaaect Languaaaaaaaagsssssssssssssssssse..."), //weird interaction para humaba yung width wtf
+                    "    Select Language...                                                      ",
+                    style: TextStyle(
+                      fontFamily: 'Sans',
+                      fontStyle: FontStyle.italic,
+                      fontSize: 16,
+                    )),
                 style: const TextStyle(
+                  fontFamily: 'Sans',
+                  fontStyle: FontStyle.normal,
                   color: Colors.black,
                   fontSize: 16,
                 ),
                 icon: const Icon(
-                  Icons.arrow_drop_down,
+                  Icons.arrow_drop_down_circle_outlined,
                   color: Colors.black,
                 ),
                 iconSize: 30,
                 elevation: 16,
-                underline: Container(
-                  height: 2,
-                  color: Colors.white,
-                ),
+                underline: const SizedBox(),
                 borderRadius: BorderRadius.circular(10),
                 items: const [
                   DropdownMenuItem(
@@ -98,8 +110,12 @@ class TranslationPage extends StatelessWidget {
                 ],
                 onChanged: (String? value) {
                   print('Selected language: $value');
+                  setState(() {
+                    // Assign the selected value to a variable to update the DropdownButton
+                    selectedLanguage = value;
+                  });
                 },
-                value: 'English',
+                value: selectedLanguage,
               ),
             ),
           ),

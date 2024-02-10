@@ -82,11 +82,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: Intro Rust
-         - asset: fonts/IntroRust-Base.ttf
-     - family: Anton
-       fonts:
-         - asset: fonts/Anton-Regular.ttf
+    - family: Intro Rust
+      fonts:
+        - asset: fonts/IntroRust-Base.otf
+    - family: Anton
+      fonts:
+        - asset: fonts/Anton-Regular.ttf
+    - family: Sans
+      fonts:
+        - asset: fonts/Sans.ttf
+      
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

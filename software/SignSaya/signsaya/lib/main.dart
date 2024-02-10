@@ -31,6 +31,22 @@ class MyHomePage extends StatelessWidget {
             height: double.infinity,
           ),
           Positioned(
+            top: 45,
+            right: 0,
+            child: ElevatedButton(
+              onPressed: null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF011F4B),
+                shape: const CircleBorder(),
+              ),
+              child: Image.asset(
+                'lib/images/infoButton.png',
+                width: 25,
+                height: 25,
+              ),
+            ),
+          ),
+          Positioned(
             top: 650,
             left: 0,
             right: 0,
@@ -56,7 +72,8 @@ class MyHomePage extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'Intro Rust',
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 30,
+                      color: Colors.black,
                     ),
                   ),
                 ),
