@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages/translation_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,7 @@ class MyHomePage extends StatelessWidget {
         children: [
           // Background Image
           Image.asset(
-            'lib/images/backgroundImage.png',
+            'lib/images/backgroundTranslation.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
