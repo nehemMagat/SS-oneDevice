@@ -12,6 +12,14 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   String? selectedLanguage;
 
+  bool _isContainerVisible = false;
+
+  void _toggleContainerVisibility() {
+    setState(() {
+      _isContainerVisible = !_isContainerVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Scaffold provides the basic structure ogf the visual interface
@@ -231,6 +239,91 @@ class _TranslationPageState extends State<TranslationPage> {
             child: Divider(
               color: Colors.white,
               thickness: 3,
+            ),
+          ),
+          Positioned(
+            top: 510,
+            left: 25,
+            child: Container(
+              width: 370,
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+              ),
+              child: Positioned(
+                child: Positioned(
+                  top: 650,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _toggleContainerVisibility,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: const Text(
+                          'M',
+                          style: TextStyle(
+                            fontFamily: 'Intro Rust',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          //BUTTON FOR HIDDEN CONTAINER
+
+          //hidden container
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            top: _isContainerVisible
+                ? 570
+                : 900, // Adjust these values as needed
+            left: 50,
+            right: 50,
+            child: Visibility(
+              visible: _isContainerVisible,
+              child: Container(
+                width: double.infinity,
+                height: 260,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFFCDFFD8),
+                      Color(0xFF94B9FF),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    'SPEECH TO TEXT HERE',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
