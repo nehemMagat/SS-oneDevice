@@ -34,6 +34,9 @@ class _TranslationPageState extends State<TranslationPage> {
     final double buttonsRowTop = screenSize.height * 0.855;
     final double hiddenContainerTop = screenSize.height * 0.66;
 
+    String dropdownHintText =
+        "${" " * (screenSize.width * 0.008).round()}Select Language${" " * (screenSize.width * 0.1).round()}";
+
     return Scaffold(
       body: Stack(
         children: [
@@ -103,6 +106,7 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
           ),
           // Dropdown List
+
           Positioned(
             top: dropdownContainerTop,
             left: screenSize.width * 0.05,
@@ -114,9 +118,9 @@ class _TranslationPageState extends State<TranslationPage> {
                 color: Colors.white,
               ),
               child: DropdownButton<String>(
-                hint: const Text(
-                  "    Select Language...                                  ",
-                  style: TextStyle(
+                hint: Text(
+                  dropdownHintText,
+                  style: const TextStyle(
                     fontFamily: 'Sans',
                     fontStyle: FontStyle.italic,
                     fontSize: 16,
