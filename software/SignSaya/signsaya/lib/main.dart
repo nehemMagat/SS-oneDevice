@@ -22,51 +22,61 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen size
+    final Size screenSize = MediaQuery.of(context).size;
+
+    // Calculate the values based on screen size
+    final double buttonWidth = screenSize.width * 0.8;
+    final double buttonHeight = 50;
+    final double infoButtonSize = screenSize.width * 0.07;
+
     return Scaffold(
       body: Stack(
         children: [
           Image.asset(
             'lib/images/backgroundHome.png',
             fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+            width: screenSize.width,
+            height: screenSize.height,
           ),
           Positioned(
-            top: 45,
-            right: 0,
+            top: screenSize.height * 0.06,
+            right: screenSize.width * 0.03,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const InformationPage()),
+                    builder: (context) => const InformationPage(),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
+                backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
                 'lib/images/infoButton.png',
-                width: 25,
-                height: 25,
+                width: infoButtonSize,
+                height: infoButtonSize,
               ),
             ),
           ),
           Positioned(
-            top: 650,
-            left: 0,
-            right: 0,
+            top: screenSize.height * 0.8,
+            left: screenSize.width * 0.1,
+            right: screenSize.width * 0.1,
             child: Center(
               child: SizedBox(
-                width: 250,
-                height: 50,
+                width: buttonWidth,
+                height: buttonHeight,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const TranslationPage()),
+                        builder: (context) => const TranslationPage(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

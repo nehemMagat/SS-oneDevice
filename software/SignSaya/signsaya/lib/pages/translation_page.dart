@@ -22,7 +22,18 @@ class _TranslationPageState extends State<TranslationPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold provides the basic structure ogf the visual interface
+    // Get screen size
+    final Size screenSize = MediaQuery.of(context).size;
+
+    // Calculate positions based on screen size
+    final double infoButtonTop = screenSize.height * 0.04;
+    final double connectionButtonTop = screenSize.height * 0.053;
+    final double dropdownContainerTop = screenSize.height * 0.253;
+    final double gradientContainerTop = screenSize.height * 0.3;
+    final double translationImageTop = screenSize.height * 0.87;
+    final double buttonsRowTop = screenSize.height * 0.855;
+    final double hiddenContainerTop = screenSize.height * 0.66;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -30,13 +41,13 @@ class _TranslationPageState extends State<TranslationPage> {
           Image.asset(
             'lib/images/backgroundTranslation.png',
             fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+            width: screenSize.width,
+            height: screenSize.height,
           ),
           // Info Button
           Positioned(
-            top: 45,
-            right: 0,
+            top: infoButtonTop,
+            right: screenSize.width * 0.02,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -46,7 +57,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
+                backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
@@ -58,9 +69,9 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           //Connection
           Positioned(
-            top: 53,
-            left: 0,
-            right: 220,
+            top: connectionButtonTop,
+            left: screenSize.width * 0.02,
+            right: screenSize.width * 0.6,
             child: Center(
               child: SizedBox(
                 width: 150,
@@ -91,13 +102,12 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
-          // Settings Button
           // Dropdown List
           Positioned(
-            top: 240,
-            left: 25,
+            top: dropdownContainerTop,
+            left: screenSize.width * 0.05,
             child: Container(
-              width: 370,
+              width: screenSize.width * 0.9,
               height: 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -105,12 +115,13 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
               child: DropdownButton<String>(
                 hint: const Text(
-                    "    Select Language...                                                      ",
-                    style: TextStyle(
-                      fontFamily: 'Sans',
-                      fontStyle: FontStyle.italic,
-                      fontSize: 16,
-                    )),
+                  "    Select Language...                                  ",
+                  style: TextStyle(
+                    fontFamily: 'Sans',
+                    fontStyle: FontStyle.italic,
+                    fontSize: 16,
+                  ),
+                ),
                 style: const TextStyle(
                   fontFamily: 'Sans',
                   fontStyle: FontStyle.normal,
@@ -146,7 +157,6 @@ class _TranslationPageState extends State<TranslationPage> {
                 onChanged: (String? value) {
                   print('Selected language: $value');
                   setState(() {
-                    // Assign the selected value to a variable to update the DropdownButton
                     selectedLanguage = value;
                   });
                 },
@@ -156,14 +166,14 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // Another Gradient Container
           Positioned(
-            top: 290,
-            left: 0,
-            right: 0,
+            top: gradientContainerTop,
+            left: screenSize.width * 0.01,
+            right: screenSize.width * 0.01,
             child: ElevatedButton(
               onPressed: null,
               child: Container(
-                width: 380,
-                height: 200,
+                width: screenSize.width * 0.9,
+                height: screenSize.height * 0.2,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   gradient: const LinearGradient(
@@ -180,14 +190,14 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // Translation Image
           Positioned(
-            top: 870,
-            left: 40,
+            top: translationImageTop * 1.05,
+            left: screenSize.width * 0.05,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
+                backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
@@ -199,12 +209,12 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // History Button
           Positioned(
-            top: 870,
-            left: 290,
+            top: translationImageTop * 1.05,
+            left: screenSize.width * 0.68,
             child: ElevatedButton(
               onPressed: null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
+                backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
@@ -216,12 +226,12 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // Gloves Placeholder
           Positioned(
-            top: 870,
-            left: 165,
+            top: translationImageTop * 1.05,
+            left: screenSize.width * 0.38,
             child: ElevatedButton(
               onPressed: null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF011F4B),
+                backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
@@ -232,20 +242,20 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
           ),
           // Horizontal Divider
-          const Positioned(
-            top: 850,
+          Positioned(
+            top: buttonsRowTop * 1.04,
             left: 0,
             right: 0,
-            child: Divider(
+            child: const Divider(
               color: Colors.white,
               thickness: 3,
             ),
           ),
           Positioned(
-            top: 510,
-            left: 25,
+            top: dropdownContainerTop * 2.1,
+            left: screenSize.width * 0.05,
             child: Container(
-              width: 370,
+              width: screenSize.width * 0.9,
               height: 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -282,45 +292,39 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
-          //BUTTON FOR HIDDEN CONTAINER
-
-          //hidden container
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            top: _isContainerVisible
-                ? 570
-                : 900, // Adjust these values as needed
-            left: 50,
-            right: 50,
-            child: Visibility(
-              visible: _isContainerVisible,
-              child: Container(
-                width: double.infinity,
-                height: 260,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color(0xFFCDFFD8),
-                      Color(0xFF94B9FF),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
+          Positioned(
+            top: hiddenContainerTop * 0.9,
+            left: screenSize.width * 0.06,
+            right: screenSize.width * 0.06,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              height: _isContainerVisible ? screenSize.height * 0.22 : 0,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color(0xFFCDFFD8),
+                    Color(0xFF94B9FF),
                   ],
                 ),
-                child: const Center(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Visibility(
+                visible: _isContainerVisible,
+                child: Center(
                   child: Text(
                     'SPEECH TO TEXT HERE',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
               ),
