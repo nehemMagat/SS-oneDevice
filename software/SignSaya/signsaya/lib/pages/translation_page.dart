@@ -35,7 +35,7 @@ class _TranslationPageState extends State<TranslationPage> {
     final double hiddenContainerTop = screenSize.height * 0.66;
 
     String dropdownHintText =
-        "${" " * (screenSize.width * 0.008).round()}Select Language${" " * (screenSize.width * 0.1).round()}";
+        "${" " * (screenSize.width * 0.01).round()}Select Language...${" " * (screenSize.width * 0.093).round()}";
 
     return Scaffold(
       body: Stack(
