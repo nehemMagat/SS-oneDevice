@@ -60,6 +60,8 @@ flutter:
     - lib/images/translationHome.png
     - lib/images/historyButton.png
     - lib/images/glovesPlaceholder.png
+    - lib/images/delBttn.png
+    - lib/images/micBttn.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

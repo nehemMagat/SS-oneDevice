@@ -47,7 +47,7 @@ class _TranslationPageState extends State<TranslationPage> {
             width: screenSize.width,
             height: screenSize.height,
           ),
-          // Info Button
+          // Calibration Button
           Positioned(
             top: infoButtonTop,
             right: screenSize.width * 0.02,
@@ -106,7 +106,6 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
           ),
           // Dropdown List
-
           Positioned(
             top: dropdownContainerTop,
             left: screenSize.width * 0.05,
@@ -177,7 +176,7 @@ class _TranslationPageState extends State<TranslationPage> {
               onPressed: null,
               child: Container(
                 width: screenSize.width * 0.9,
-                height: screenSize.height * 0.2,
+                height: screenSize.height * 0.215,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   gradient: const LinearGradient(
@@ -233,15 +232,15 @@ class _TranslationPageState extends State<TranslationPage> {
             top: translationImageTop * 1.05,
             left: screenSize.width * 0.38,
             child: ElevatedButton(
-              onPressed: null,
+              onPressed: _toggleContainerVisibility,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
               ),
               child: Image.asset(
-                'lib/images/glovesPlaceholder.png',
-                width: 50,
-                height: 50,
+                'lib/images/micBttn.png',
+                width: 45,
+                height: 45,
               ),
             ),
           ),
@@ -255,6 +254,7 @@ class _TranslationPageState extends State<TranslationPage> {
               thickness: 3,
             ),
           ),
+          // M HAHAHHA
           Positioned(
             top: dropdownContainerTop * 2.1,
             left: screenSize.width * 0.05,
@@ -265,45 +265,66 @@ class _TranslationPageState extends State<TranslationPage> {
                 borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
               ),
-              child: Positioned(
-                child: Positioned(
-                  top: 650,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: _toggleContainerVisibility,
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          'M',
-                          style: TextStyle(
-                            fontFamily: 'Intro Rust',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ),
+              child: DropdownButton<String>(
+                hint: Text(
+                  dropdownHintText,
+                  style: const TextStyle(
+                    fontFamily: 'Sans',
+                    fontStyle: FontStyle.italic,
+                    fontSize: 16,
                   ),
                 ),
+                style: const TextStyle(
+                  fontFamily: 'Sans',
+                  fontStyle: FontStyle.normal,
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+                icon: const Icon(
+                  Icons.arrow_drop_down_circle_outlined,
+                  color: Colors.black,
+                ),
+                iconSize: 30,
+                elevation: 16,
+                underline: const SizedBox(),
+                borderRadius: BorderRadius.circular(10),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'English',
+                    child: Text('   English'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Filipino',
+                    child: Text('   Filipino'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Korean',
+                    child: Text('   Korean'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Japanese',
+                    child: Text('   Japanese'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  print('Selected language: $value');
+                  setState(() {
+                    selectedLanguage = value;
+                  });
+                },
+                value: selectedLanguage,
               ),
             ),
           ),
+          // YUNG LUMILITAW
           Positioned(
-            top: hiddenContainerTop * 0.9,
+            top: hiddenContainerTop * 0.877,
             left: screenSize.width * 0.06,
             right: screenSize.width * 0.06,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
-              height: _isContainerVisible ? screenSize.height * 0.22 : 0,
+              height: _isContainerVisible ? screenSize.height * 0.304 : 0,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.centerLeft,
@@ -313,7 +334,7 @@ class _TranslationPageState extends State<TranslationPage> {
                     Color(0xFF94B9FF),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.3),
@@ -325,10 +346,19 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
               child: Visibility(
                 visible: _isContainerVisible,
-                child: Center(
-                  child: Text(
-                    'SPEECH TO TEXT HERE',
-                    style: const TextStyle(fontSize: 20),
+                child: Positioned(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                          top: hiddenContainerTop * 0.40,
+                          left: screenSize.width * 0.78,
+                          child: Image.asset(
+                            'lib/images/delBttn.png',
+                            width: 30,
+                            height: 30,
+                          )),
+                      const Positioned(child: Text("Speech to txt"))
+                    ],
                   ),
                 ),
               ),

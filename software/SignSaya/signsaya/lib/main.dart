@@ -39,6 +39,7 @@ class MyHomePage extends StatelessWidget {
             width: screenSize.width,
             height: screenSize.height,
           ),
+          // information button
           Positioned(
             top: screenSize.height * 0.06,
             right: screenSize.width * 0.03,
@@ -62,6 +63,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
           ),
+          // Get Started na bttn
           Positioned(
             top: screenSize.height * 0.8,
             left: screenSize.width * 0.1,
@@ -85,7 +87,7 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'Get Started',
+                    'Get TITE',
                     style: TextStyle(
                       fontFamily: 'Intro Rust',
                       fontWeight: FontWeight.bold,
