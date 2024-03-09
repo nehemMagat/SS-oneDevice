@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'bluetooth_connection.dart';
 import 'gloves_calibration.dart';
 
@@ -11,12 +13,38 @@ class TranslationPage extends StatefulWidget {
 
 class _TranslationPageState extends State<TranslationPage> {
   String? selectedLanguage;
+  SpeechToText _speechToText = SpeechToText();
+  TextEditingController _speechController = TextEditingController();
 
   bool _isContainerVisible = false;
 
   void _toggleContainerVisibility() {
     setState(() {
       _isContainerVisible = !_isContainerVisible;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  void _initSpeech() async {
+    _speechToText.initialize(onError: (error) => print('Error: $error'));
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _speechController.text = result.recognizedWords;
     });
   }
 
@@ -105,7 +133,69 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
-          // Dropdown List
+          // PANAGALAWANG TRANSLATION
+          Positioned(
+            top: screenSize.height * 0.539,
+            left: screenSize.width * 0.05,
+            child: Container(
+              width: screenSize.width * 0.9,
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+              ),
+              child: DropdownButton<String>(
+                hint: Text(
+                  dropdownHintText,
+                  style: const TextStyle(
+                    fontFamily: 'Sans',
+                    fontStyle: FontStyle.italic,
+                    fontSize: 16,
+                  ),
+                ),
+                style: const TextStyle(
+                  fontFamily: 'Sans',
+                  fontStyle: FontStyle.normal,
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+                icon: const Icon(
+                  Icons.arrow_drop_down_circle_outlined,
+                  color: Colors.black,
+                ),
+                iconSize: 30,
+                elevation: 16,
+                underline: const SizedBox(),
+                borderRadius: BorderRadius.circular(10),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'English',
+                    child: Text('   English'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Filipino',
+                    child: Text('   Filipino'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Chineese Mandarin',
+                    child: Text('   Chineese Mandarin'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Japanese',
+                    child: Text('   Japanese'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  print('Selected language: $value');
+                  setState(() {
+                    selectedLanguage = value;
+                  });
+                },
+                value: selectedLanguage,
+              ),
+            ),
+          ),
+          // UNANG TRANSLATION
           Positioned(
             top: dropdownContainerTop,
             left: screenSize.width * 0.05,
@@ -167,6 +257,7 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
+
           // Another Gradient Container
           Positioned(
             top: gradientContainerTop,
@@ -254,68 +345,6 @@ class _TranslationPageState extends State<TranslationPage> {
               thickness: 3,
             ),
           ),
-          // M HAHAHHA
-          Positioned(
-            top: dropdownContainerTop * 2.1,
-            left: screenSize.width * 0.05,
-            child: Container(
-              width: screenSize.width * 0.9,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
-              ),
-              child: DropdownButton<String>(
-                hint: Text(
-                  dropdownHintText,
-                  style: const TextStyle(
-                    fontFamily: 'Sans',
-                    fontStyle: FontStyle.italic,
-                    fontSize: 16,
-                  ),
-                ),
-                style: const TextStyle(
-                  fontFamily: 'Sans',
-                  fontStyle: FontStyle.normal,
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
-                icon: const Icon(
-                  Icons.arrow_drop_down_circle_outlined,
-                  color: Colors.black,
-                ),
-                iconSize: 30,
-                elevation: 16,
-                underline: const SizedBox(),
-                borderRadius: BorderRadius.circular(10),
-                items: const [
-                  DropdownMenuItem(
-                    value: 'English',
-                    child: Text('   English'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Filipino',
-                    child: Text('   Filipino'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Korean',
-                    child: Text('   Korean'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Japanese',
-                    child: Text('   Japanese'),
-                  ),
-                ],
-                onChanged: (String? value) {
-                  print('Selected language: $value');
-                  setState(() {
-                    selectedLanguage = value;
-                  });
-                },
-                value: selectedLanguage,
-              ),
-            ),
-          ),
           // YUNG LUMILITAW
           Positioned(
             top: hiddenContainerTop * 0.877,
@@ -344,26 +373,76 @@ class _TranslationPageState extends State<TranslationPage> {
                   ),
                 ],
               ),
-              child: Visibility(
-                visible: _isContainerVisible,
-                child: Positioned(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                          top: hiddenContainerTop * 0.40,
-                          left: screenSize.width * 0.78,
-                          child: Image.asset(
-                            'lib/images/delBttn.png',
-                            width: 30,
-                            height: 30,
-                          )),
-                      const Positioned(child: Text("Speech to txt"))
-                    ],
+              child: Stack(
+                children: [
+                  TextField(
+                    controller: _speechController,
+                    decoration: InputDecoration(
+                      hintText: 'Tap the Microphone to Start Speech to Text',
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: InputBorder.none,
+                      // border: OutlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(10.0),
+                      // ),
+                      suffixIcon: IconButton(
+                        onPressed: _speechToText.isListening
+                            ? _stopListening
+                            : _startListening,
+                        icon: Icon(_speechToText.isListening
+                            ? Icons.mic_off
+                            : Icons.mic),
+                      ),
+                    ),
+                    maxLines: null,
                   ),
-                ),
+                  Positioned(
+                    right: 12.0,
+                    top: 350.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _speechController.clear();
+                        });
+                      },
+                      child: const Icon(Icons.delete,
+                          color: Colors.black, size: 30),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
+
+          // Text Display for Speech Recognition
+          // Positioned(
+          //   top: hiddenContainerTop * 0.277,
+          //   left: screenSize.width * 0.06,
+          //   right: screenSize.width * 0.06,
+          //   child: AnimatedContainer(
+          //     duration: const Duration(milliseconds: 500),
+          //     curve: Curves.easeInOut,
+          //     height: _isContainerVisible ? screenSize.height * 0.304 : 0,
+          //     decoration: BoxDecoration(
+          //       gradient: const LinearGradient(
+          //         begin: Alignment.centerLeft,
+          //         end: Alignment.centerRight,
+          //         colors: [
+          //           Color(0xFFCDFFD8),
+          //           Color(0xFF94B9FF),
+          //         ],
+          //       ),
+          //       borderRadius: BorderRadius.circular(10),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.black.withOpacity(0.3),
+          //           spreadRadius: 2,
+          //           blurRadius: 5,
+          //           offset: const Offset(0, 3),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
