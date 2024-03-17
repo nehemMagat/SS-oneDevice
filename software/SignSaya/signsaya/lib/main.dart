@@ -1,9 +1,27 @@
 import 'package:SignSaya/pages/information_page.dart';
 import 'package:flutter/material.dart';
 import 'pages/translation_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize permission handler
+  await _initPermissions();
+
   runApp(const MyApp());
+}
+
+// Initialize permissions
+Future<void> _initPermissions() async {
+  // Request microphone permission
+  var status = await Permission.microphone.request();
+  if (status.isGranted) {
+    print("Microphone permission granted");
+  } else {
+    print("Microphone permission denied");
+    // Handle permission denied
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -87,7 +105,7 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'Get TITE',
+                    'MATATAPOS NATIN ITO!',
                     style: TextStyle(
                       fontFamily: 'Intro Rust',
                       fontWeight: FontWeight.bold,
