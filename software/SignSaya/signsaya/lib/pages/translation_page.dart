@@ -4,8 +4,6 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'bluetooth_connection.dart';
 import 'gloves_calibration.dart';
 
-import 'translation_ng_mundo.dart';
-
 class TranslationPage extends StatefulWidget {
   const TranslationPage({Key? key}) : super(key: key);
 
