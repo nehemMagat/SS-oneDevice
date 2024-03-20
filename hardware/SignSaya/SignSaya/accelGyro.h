@@ -2,6 +2,19 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
+#define GYRO_SENSITIVITY 16.4  // Sensitivity of gyroscope in LSB/(deg/s)
+
+
+// Filter constants
+#define ALPHA 0.98  // Weight for gyroscope data
+#define BETA 0.02   // Weight for accelerometer data
+
+// Variables to store filtered orientation
+float roll, pitch, yaw;
+
+// Variables to store previous orientation
+float prevRoll = 0, prevPitch = 0, prevYaw = 0;
+
 class accelSensor {
 private:
   Adafruit_MPU6050 mpu;
@@ -30,7 +43,7 @@ public:
         delay(10);
       }
     }
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+    mpu.setAccelerometerRange(MPU6050_RANGE_2_G);
     Serial.print("Accelerometer range set to: ");
     switch (mpu.getAccelerometerRange()) {
       case MPU6050_RANGE_2_G:
@@ -46,7 +59,7 @@ public:
         Serial.println("+-16G");
         break;
     }
-    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+    mpu.setGyroRange(MPU6050_RANGE_250_DEG);
     Serial.print("Gyro range set to: ");
     switch (mpu.getGyroRange()) {
       case MPU6050_RANGE_250_DEG:
@@ -121,5 +134,44 @@ public:
     Serial.print(a.gyro.z);
     Serial.print("  || Chip Temperature: ");
     Serial.println(temp.temperature);
+  }
+
+  void tryData() {
+    float* data = update();
+    float accelData[3] = { data[0], data[1], data[2] };
+    float gyroData[3] = { data[3], data[4], data[5] };
+    float dt = 0.01;  // Adjust this value according to your sampling rate
+
+    complementaryFilter(accelData, gyroData, dt);
+
+    Serial.print("Roll: ");
+    Serial.print(roll);
+    Serial.print("\tPitch: ");
+    Serial.print(pitch);
+    Serial.print("\tYaw: ");
+    Serial.println(yaw);
+
+    delay(10);  // Adjust delay as needed
+  }
+  // Function to apply complementary filter
+  void complementaryFilter(float* accelData, float* gyroData, float dt) {
+    // Calculate roll and pitch angles from accelerometer data
+    float accRoll = atan2(accelData[1], accelData[2]) * RAD_TO_DEG;
+    float accPitch = atan2(-accelData[0], sqrt(accelData[1] * accelData[1] + accelData[2] * accelData[2])) * RAD_TO_DEG;
+
+    // Calculate roll and pitch angles from gyroscope data
+    float gyroRoll = prevRoll + gyroData[0] / GYRO_SENSITIVITY * dt;
+    float gyroPitch = prevPitch + gyroData[1] / GYRO_SENSITIVITY * dt;
+    float gyroYaw = prevYaw + gyroData[2] / GYRO_SENSITIVITY * dt;
+
+    // Apply complementary filter to combine accelerometer and gyroscope data
+    roll = ALPHA * gyroRoll + BETA * accRoll;
+    pitch = ALPHA * gyroPitch + BETA * accPitch;
+    yaw = gyroYaw;  // Yaw estimation from gyroscope only (without magnetometer)
+
+    // Update previous orientation values
+    prevRoll = roll;
+    prevPitch = pitch;
+    prevYaw = yaw;
   }
 };

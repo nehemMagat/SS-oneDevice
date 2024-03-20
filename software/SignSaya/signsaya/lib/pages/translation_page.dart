@@ -4,6 +4,8 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'bluetooth_connection.dart';
 import 'gloves_calibration.dart';
 
+import 'package:SignSaya/services/ble_scan.dart';
+
 import 'package:translator/translator.dart';
 
 class TranslationPage extends StatefulWidget {
@@ -129,11 +131,14 @@ class _TranslationPageState extends State<TranslationPage> {
                 height: 30,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BluetoothConnect()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => const BluetoothConnect()),
+                    // );
+                    begin();
+                    scan();
+
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

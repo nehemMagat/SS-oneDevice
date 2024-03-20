@@ -65,11 +65,24 @@ void dataParser(void *pvParameters);
 void bleSender(void *pvParameters);
 
 void setup() {
+  pinMode(HANDPIN, INPUT);
   Serial.begin(115200);
   while (!Serial) {
     delay(10);
   };
-  ble.begin(bluetoothName);
+  String handSide;
+  int randNumber = random(100000);
+  String UBluetoothName = bluetoothName;
+  if (digitalRead(HANDPIN)) {
+    handSide = "R";
+  } else {
+    handSide = "L";
+  }
+
+  UBluetoothName += handSide + randNumber;
+  char uBlCharArray[UBluetoothName.length() + 1];
+  UBluetoothName.toCharArray(uBlCharArray, UBluetoothName.length() + 1);
+  ble.begin(uBlCharArray);
   ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN);
 
   pinkyQueue = xQueueCreate(fingerQueueLength, sizeof(float));
@@ -92,7 +105,9 @@ void setup() {
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
 }
 
-void loop() {}
+void loop() {
+  // ACCEL.tryData();
+}
 
 /*--------------------------------------------------*/
 /*---------------------- Tasks ---------------------*/
@@ -114,7 +129,7 @@ void bleSender(void *pvParameters) {
                            message.accelData.gyroY,
                            message.accelData.gyroZ };
 
-      ble.write(sendData, sizeof(sendData)/sizeof(float));
+      ble.write(sendData, sizeof(sendData) / sizeof(float));
     }
     vTaskDelay(pdMS_TO_TICKS(1));
   }

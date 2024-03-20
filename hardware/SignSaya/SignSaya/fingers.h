@@ -36,7 +36,7 @@ public:
     pinMode(pinNumber, INPUT);
   }
 
-  float read() {
+  int read() {
     currentValue = mapRead();
     return movingAverage(currentValue);
   }
