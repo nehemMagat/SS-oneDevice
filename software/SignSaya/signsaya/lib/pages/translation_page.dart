@@ -23,7 +23,7 @@ class _TranslationPageState extends State<TranslationPage> {
   // pang translation BEGINS here
   final translator = GoogleTranslator();
   String translatedText = "";
-  String desiredLang = "en";
+  String translationDesiredLang = "en";
 
   // pang translation ENDS here
 
@@ -158,7 +158,7 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
           ),
-          // PANAGALAWANG TRANSLATION
+          // PANGALAWANG TRANSLATION
           Positioned(
             top: screenSize.height * 0.539,
             left: screenSize.width * 0.05,
@@ -184,44 +184,29 @@ class _TranslationPageState extends State<TranslationPage> {
                   color: Colors.black,
                   fontSize: 16,
                 ),
-                icon: const Icon(
-                  Icons.arrow_drop_down_circle_outlined,
-                  color: Colors.black,
-                ),
-                iconSize: 30,
-                elevation: 16,
-                underline: const SizedBox(),
-                borderRadius: BorderRadius.circular(10),
-                items: const [
-                  DropdownMenuItem(
-                    value: 'English',
-                    child: Text('   English'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Filipino',
-                    child: Text('   Filipino'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Chineese Mandarin',
-                    child: Text('   Chineese Mandarin'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Japanese',
-                    child: Text('   Japanese'),
-                  ),
-                ],
-                onChanged: (String? value) {
-                  print('Selected language: $value');
-                  setState(() {
-                    selectedLanguage = value;
-                  });
+                value: translationDesiredLang,
+                onChanged: (String? newValue) {
+                  // Change the parameter type to String?
+                  if (newValue != null) {
+                    // Check if newValue is not null
+                    setState(() {
+                      translationDesiredLang = newValue;
+                      translateText(
+                          "", translationDesiredLang); // Clear translated text
+                    });
+                  }
                 },
-                value: selectedLanguage,
+                items: <String>['en', 'fil', 'ja', 'zh-cn']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
             ),
           ),
 
-          // UNANG TRANSLATION
           Positioned(
             top: dropdownContainerTop,
             left: screenSize.width * 0.05,
@@ -247,14 +232,15 @@ class _TranslationPageState extends State<TranslationPage> {
                   color: Colors.black,
                   fontSize: 16,
                 ),
-                value: desiredLang,
+                value: translationDesiredLang,
                 onChanged: (String? newValue) {
                   // Change the parameter type to String?
                   if (newValue != null) {
                     // Check if newValue is not null
                     setState(() {
-                      desiredLang = newValue;
-                      translateText("", desiredLang); // Clear translated text
+                      translationDesiredLang = newValue;
+                      translateText(
+                          "", translationDesiredLang); // Clear translated text
                     });
                   }
                 },
@@ -269,7 +255,7 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
           ),
 
-          // Another Gradient Container
+          // Translation Container
           Positioned(
             top: gradientContainerTop,
             left: screenSize.width * 0.01,
@@ -303,32 +289,10 @@ class _TranslationPageState extends State<TranslationPage> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (text) {
-                      translateText(text, desiredLang);
+                      translateText(text, translationDesiredLang);
                     },
                   ),
-                  const SizedBox(height: 20),
-                  // DropdownButton<String>(
-                  //   value: desiredLang,
-                  //   onChanged: (String? newValue) {
-                  //     // Change the parameter type to String?
-                  //     if (newValue != null) {
-                  //       // Check if newValue is not null
-                  //       setState(() {
-                  //         desiredLang = newValue;
-                  //         translateText(
-                  //             "", desiredLang); // Clear translated text
-                  //       });
-                  //     }
-                  //   },
-                  //   items: <String>['en', 'fil', 'ja', 'zh-cn']
-                  //       .map<DropdownMenuItem<String>>((String value) {
-                  //     return DropdownMenuItem<String>(
-                  //       value: value,
-                  //       child: Text(value),
-                  //     );
-                  //   }).toList(),
-                  // ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 80),
                   const Text(
                     'Translated Text:',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -441,19 +405,13 @@ class _TranslationPageState extends State<TranslationPage> {
                     decoration: InputDecoration(
                       hintText: 'Tap the Microphone to Start Speech to Text',
                       hintStyle: const TextStyle(
-                        color: Color.fromARGB(
-                            255, 0, 0, 0), // Change the color of the hint text
-                        fontSize: 16, // Change the font size of the hint text
-                        fontStyle: FontStyle
-                            .italic, // Apply italic style to the hint text
-                        fontWeight: FontWeight
-                            .w300, // Adjust the font weight of the hint text
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
                       ),
                       contentPadding: const EdgeInsets.all(20.0),
                       border: InputBorder.none,
-                      // border: OutlineInputBorder(
-                      //   borderRadius: BorderRadius.circular(10.0),
-                      // ),
                       suffixIcon: IconButton(
                         onPressed: _speechToText.isListening
                             ? _stopListening
@@ -464,6 +422,10 @@ class _TranslationPageState extends State<TranslationPage> {
                       ),
                     ),
                     maxLines: null,
+                    onChanged: (text) {
+                      translateText(text,
+                          translationDesiredLang); // Translate as text changes
+                    },
                   ),
                   Positioned(
                     right: 12.0,
@@ -476,6 +438,26 @@ class _TranslationPageState extends State<TranslationPage> {
                       },
                       child: const Icon(Icons.delete,
                           color: Colors.black, size: 30),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Translated Text:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          translatedText,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 ],
