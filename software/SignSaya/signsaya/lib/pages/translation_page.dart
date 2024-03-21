@@ -138,7 +138,6 @@ class _TranslationPageState extends State<TranslationPage> {
                     // );
                     begin();
                     scan();
-
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -217,40 +216,61 @@ class _TranslationPageState extends State<TranslationPage> {
                 borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
               ),
-              child: DropdownButton<String>(
-                hint: Text(
-                  dropdownHintText,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Select Language...', // Default hint text
+                    style: TextStyle(
+                      fontFamily: 'Sans',
+                      fontStyle: FontStyle.italic,
+                      fontSize: 16,
+                      color: Colors.grey, // Customize hint text color if needed
+                    ),
+                  ),
                   style: const TextStyle(
                     fontFamily: 'Sans',
-                    fontStyle: FontStyle.italic,
+                    fontStyle: FontStyle.normal,
+                    color: Colors.black,
                     fontSize: 16,
                   ),
+                  value: translationDesiredLang,
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      // Check if newValue is not null
+                      if (newValue != translationDesiredLang) {
+                        setState(() {
+                          translationDesiredLang = newValue;
+                          translateText("", translationDesiredLang);
+                        });
+                      }
+                    }
+                  },
+                  items: <String>['en', 'fil', 'ja', 'zh-cn']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    String displayText = '';
+                    switch (value) {
+                      case 'en':
+                        displayText = 'English';
+                        break;
+                      case 'fil':
+                        displayText = 'Filipino';
+                        break;
+                      case 'ja':
+                        displayText = 'Japanese';
+                        break;
+                      case 'zh-cn':
+                        displayText = 'Mandarin Chinese';
+                        break;
+                      default:
+                        displayText = '';
+                    }
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(displayText),
+                    );
+                  }).toList(),
                 ),
-                style: const TextStyle(
-                  fontFamily: 'Sans',
-                  fontStyle: FontStyle.normal,
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
-                value: translationDesiredLang,
-                onChanged: (String? newValue) {
-                  // Change the parameter type to String?
-                  if (newValue != null) {
-                    // Check if newValue is not null
-                    setState(() {
-                      translationDesiredLang = newValue;
-                      translateText(
-                          "", translationDesiredLang); // Clear translated text
-                    });
-                  }
-                },
-                items: <String>['en', 'fil', 'ja', 'zh-cn']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
               ),
             ),
           ),
@@ -258,8 +278,8 @@ class _TranslationPageState extends State<TranslationPage> {
           // Translation Container
           Positioned(
             top: gradientContainerTop,
-            left: screenSize.width * 0.01,
-            right: screenSize.width * 0.01,
+            left: screenSize.width * 0.05,
+            right: screenSize.width * 0.05,
             child: Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
