@@ -8,6 +8,8 @@ import 'package:SignSaya/services/ble_scan.dart';
 
 import 'package:translator/translator.dart';
 
+import 'package:SignSaya/pages/history_page.dart';
+
 class TranslationPage extends StatefulWidget {
   const TranslationPage({Key? key}) : super(key: key);
 
@@ -392,7 +394,14 @@ class _TranslationPageState extends State<TranslationPage> {
             top: translationImageTop * 1.05,
             left: screenSize.width * 0.68,
             child: ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                MaterialPageRoute(
+                  builder: (context) => const HistoryPage(), // pang route sa history page
+                ),
+            );
+          },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
