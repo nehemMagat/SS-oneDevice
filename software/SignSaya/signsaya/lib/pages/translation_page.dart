@@ -40,7 +40,8 @@ class _TranslationPageState extends State<TranslationPage> {
         if (dropdown == 'top') {
           translatedTextTop = result.text; // Update top dropdown translation
         } else {
-          translatedTextBottom = result.text; // Update bottom dropdown translation
+          translatedTextBottom =
+              result.text; // Update bottom dropdown translation
         }
       });
     });
@@ -170,7 +171,7 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           //PANGALAWANG DROPDOWN
           Positioned(
-            top: screenSize.height * 0.539,
+            top: screenSize.height * 0.56,
             left: screenSize.width * 0.05,
             child: Container(
               width: screenSize.width * 0.9,
@@ -183,7 +184,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 child: DropdownButton<String>(
                   isExpanded: true,
                   hint: const Text(
-                    'Select Language...', // Default hint text
+                    '  Select Language...', // Default hint text
                     style: TextStyle(
                       fontFamily: 'Sans',
                       fontStyle: FontStyle.italic,
@@ -204,7 +205,8 @@ class _TranslationPageState extends State<TranslationPage> {
                       if (newValue != selectedLanguageBottom) {
                         setState(() {
                           selectedLanguageBottom = newValue;
-                          translateText("", newValue, 'bottom'); // Update bottom dropdown translation
+                          translateText("", newValue,
+                              'bottom'); // Update bottom dropdown translation
                         });
                       }
                     }
@@ -253,7 +255,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 child: DropdownButton<String>(
                   isExpanded: true,
                   hint: const Text(
-                    'Select Language...', // Default hint text
+                    '  Select Language...', // Default hint text
                     style: TextStyle(
                       fontFamily: 'Sans',
                       fontStyle: FontStyle.italic,
@@ -274,7 +276,8 @@ class _TranslationPageState extends State<TranslationPage> {
                       if (newValue != selectedLanguageTop) {
                         setState(() {
                           selectedLanguageTop = newValue;
-                          translateText("", newValue, 'top'); // Update top dropdown translation
+                          translateText("", newValue,
+                              'top'); // Update top dropdown translation
                         });
                       }
                     }
@@ -342,20 +345,21 @@ class _TranslationPageState extends State<TranslationPage> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (text) {
-                      translateText(text, selectedLanguageTop ?? '', 'top'); // Update top dropdown translation
+                      translateText(text, selectedLanguageTop ?? '',
+                          'top'); // Update top dropdown translation
                     },
                   ),
-                  const SizedBox(height: 80),
+                  SizedBox(height: screenSize.height * 0.0355),
                   const Text(
                     'Translated Text:', // Update label to indicate top dropdown translation
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: screenSize.height * 0.0355),
                   Text(
                     translatedTextTop, // Display top dropdown translation
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenSize.height * 0.0355),
                   // const Text(
                   //   'Translated Text (Bottom Dropdown):', // Label for bottom dropdown translation
                   //   style: TextStyle(fontWeight: FontWeight.bold),
@@ -397,11 +401,12 @@ class _TranslationPageState extends State<TranslationPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                MaterialPageRoute(
-                  builder: (context) => const HistoryPage(), // pang route sa history page
-                ),
-            );
-          },
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const HistoryPage(), // pang route sa history page
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF011F4B),
                 shape: const CircleBorder(),
@@ -442,13 +447,13 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           // YUNG LUMILITAW
           Positioned(
-            top: hiddenContainerTop * 0.877,
+            top: hiddenContainerTop * 0.922,
             left: screenSize.width * 0.06,
             right: screenSize.width * 0.06,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
-              height: _isContainerVisible ? screenSize.height * 0.304 : 0,
+              height: _isContainerVisible ? screenSize.height * 0.275 : 0,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.centerLeft,
@@ -493,12 +498,13 @@ class _TranslationPageState extends State<TranslationPage> {
                     ),
                     maxLines: null,
                     onChanged: (text) {
-                      translateText(text, selectedLanguageBottom ?? '', 'bottom'); // Update bottom dropdown translation
+                      translateText(text, selectedLanguageBottom ?? '',
+                          'bottom'); // Update bottom dropdown translation
                     },
                   ),
                   Positioned(
-                    right: 12.0,
-                    top: 350.0,
+                    right: screenSize.width * 0.025,
+                    top: screenSize.height * 0.225,
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -510,18 +516,18 @@ class _TranslationPageState extends State<TranslationPage> {
                     ),
                   ),
                   Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
+                    bottom: screenSize.height * 0.01,
+                    left: screenSize.width * 0.06,
+                    right: screenSize.width * 0.06,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 16),
+                        SizedBox(height: screenSize.height * 0.0334),
                         const Text(
                           'Translated Text:',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: screenSize.height * 0.0334),
                         Text(
                           translatedTextBottom, // Display bottom dropdown translation
                           textAlign: TextAlign.center,
@@ -538,4 +544,3 @@ class _TranslationPageState extends State<TranslationPage> {
     );
   }
 }
-
