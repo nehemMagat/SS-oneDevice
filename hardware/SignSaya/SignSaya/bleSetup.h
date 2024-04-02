@@ -5,6 +5,7 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+
 BLEServer* pServer = NULL;
 BLECharacteristic* pTxCharacteristic;
 bool deviceConnected = false;
@@ -93,11 +94,12 @@ ESP_ERROR_CHECK(ret);
   }
 
   void write(float* message, size_t length) {
-
+    long startTime = micros();
     uint8_t data[sizeof(float) * length];
     memcpy(data, message, sizeof(data));
 
     pTxCharacteristic->setValue(data, sizeof(data));
     pTxCharacteristic->notify();
+    ESP_LOGV("BLE WRITE TIME", "%d micros", (micros() - startTime));
   }
 };

@@ -1,8 +1,10 @@
 //#include <Arduino.h>
+#include "types.h"
 #include "config.h"
 #include "bleSetup.h"
 #include "accelGyro.h"
 #include "fingers.h"
+
 
 accelSensor ACCEL;
 bleInstance ble;
@@ -14,32 +16,6 @@ FingerInstance indexFinger(INDEXPIN);
 FingerInstance thumbFinger(THUMBPIN);
 
 int packageSent = 0;
-
-typedef struct {
-  float accelX;
-  float accelY;
-  float accelZ;
-  float gyroX;
-  float gyroY;
-  float gyroZ;
-} accelGyroData_t;
-
-typedef struct {
-  float pinky;
-  float ring;
-  float middle;
-  float index;
-  float thumb;
-  accelGyroData_t accelData;
-} handData_t;
-
-struct fingerError {
-  int pinky;
-  int ring;
-  int middle;
-  int index;
-  int thumb;
-};
 
 fingerError fingerErrorCheck = { 0, 0, 0, 0, 0 };
 
@@ -92,21 +68,20 @@ void setup() {
   thumbQueue = xQueueCreate(fingerQueueLength, sizeof(float));
 
   handQueue = xQueueCreate(handQueueLength, sizeof(handData_t));
-  IMUQueue = xQueueCreate(IMUQueueLength, sizeof(accelGyroData_t));
+  IMUQueue = xQueueCreate(IMUQueueLength, sizeof(angles));
 
   xTaskCreatePinnedToCore(&pinkyFingerFunc, "pinkyFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&ringFingerFunc, "ringFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&middleFingerFunc, "middleFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&indexFingerFunc, "indexFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&thumbFingerFunc, "thumbFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
-  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", 2048, NULL, accelPriority, NULL, APPCORE);
+  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, NULL, APPCORE);
 
   xTaskCreatePinnedToCore(&dataParser, "dataPreparation", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
 }
 
 void loop() {
-  // ACCEL.tryData();
 }
 
 /*--------------------------------------------------*/
@@ -122,13 +97,18 @@ void bleSender(void *pvParameters) {
                            message.middle,
                            message.index,
                            message.thumb,
-                           message.accelData.accelX,
-                           message.accelData.accelY,
-                           message.accelData.accelZ,
-                           message.accelData.gyroX,
-                           message.accelData.gyroY,
-                           message.accelData.gyroZ };
-
+                           message.imuData.angleX,
+                           message.imuData.angleY };
+      ESP_LOGI("Sending of Data",
+               "%f, %f, %f, %f, %f, %f, %f",
+               message.pinky,
+               message.ring,
+               message.middle,
+               message.index,
+               message.thumb,
+               message.imuData.angleX,
+               message.imuData.angleY);
+      ESP_LOGI("AVAILABLE RAM", "%d", )
       ble.write(sendData, sizeof(sendData) / sizeof(float));
     }
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -144,28 +124,24 @@ void dataParser(void *pvParameters) {
     int middleStatus = xQueueReceive(middleQueue, &machineData.middle, fingerQueueWait);
     int indexStatus = xQueueReceive(indexQueue, &machineData.index, fingerQueueWait);
     int thumbStatus = xQueueReceive(thumbQueue, &machineData.thumb, fingerQueueWait);
-    int accelStatus = xQueueReceive(IMUQueue, &machineData.accelData, IMUQueueWait);
+    int accelStatus = xQueueReceive(IMUQueue, &machineData.imuData, IMUQueueWait);
     if ((pinkyStatus == pdTRUE) || (ringStatus == pdTRUE) || (middleStatus == pdTRUE) || (indexStatus == pdTRUE) || (thumbStatus == pdTRUE) || (accelStatus == pdTRUE)) {
-      xQueueSend(handQueue, &machineData, IMUQueueWait);  //updates approx @ 125hz
+      if (xQueueSend(handQueue, &machineData, IMUQueueWait)  != pdPASS ){
+        ESP_LOGD("Missed HandData", "%f, %f", machineData.imuData.angleX, machineData.imuData.angleY);
+      }  //updates approx @ 125hz
     } else {
       Serial.println("No Data to be saved");
     }
-    vTaskDelay(pdMS_TO_TICKS(3));
+    vTaskDelay(pdMS_TO_TICKS(1));
   }
 }
 
 void accelGyroFunc(void *pvParameters) {
   for (;;) {
-    accelGyroData_t imuData;
-    float *value = ACCEL.update();
-    imuData.accelX = value[0];
-    imuData.accelY = value[1];
-    imuData.accelZ = value[2];
-    imuData.gyroX = value[3];
-    imuData.gyroY = value[4];
-    imuData.gyroZ = value[5];
+    angles imuData = ACCEL.complementaryFilter();
     if (xQueueSend(IMUQueue, &imuData, pdMS_TO_TICKS(IMUQueueWait)) != pdPASS) {
       missedIMUData++;
+      ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
     }
     vTaskDelay(pdMS_TO_TICKS(1000 / IMUSamplingRate));
   }
