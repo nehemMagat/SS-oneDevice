@@ -105,7 +105,7 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'MATATAPOS NATIN ITO!',
+                    'GET STARTED',
                     style: TextStyle(
                       fontFamily: 'Intro Rust',
                       fontWeight: FontWeight.bold,
