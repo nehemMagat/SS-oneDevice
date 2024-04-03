@@ -28,14 +28,14 @@ constexpr int bluetoothIndicator = 8;
 
 
 //freeRTOS VARIABLES
-constexpr int fingerQueueLength = 100;
-constexpr int handQueueLength = 100;
-constexpr int IMUQueueLength = 100;
+constexpr int fingerQueueLength = 10;
+constexpr int handQueueLength = 15;
+constexpr int IMUQueueLength = 15;
 constexpr int IMUQueueWait = 5;
 constexpr int fingerQueueWait = 5;
 
-constexpr int fingerStackSize = 2048;
-constexpr int mpuStackSize = 2048;
+constexpr int fingerStackSize = 1280;
+constexpr int mpuStackSize = 2560;
 
 constexpr int fingerPriority = 2;
 constexpr int accelPriority = 2;
@@ -44,8 +44,8 @@ constexpr int blePriority = 4;
 constexpr int APPCORE = 1;
 constexpr int SYSTEMCORE = 0;
 
-constexpr int fingerSamplingRate = 1000; // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
-constexpr int IMUSamplingRate = 1000; // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
+constexpr int fingerSamplingRate = 250; // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
+constexpr int IMUSamplingRate = 750; // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
 
 // BLUETOOTH VARIABLES
 constexpr char bluetoothName[] = "SignSaya";
@@ -54,4 +54,8 @@ constexpr char bluetoothName[] = "SignSaya";
 bool isWireBegun = false;
 constexpr int arrayLength = fingerSamplingRate * 1; //Length of array to be  averaged
 int maxFingerValue = 255; //max value of finger output for dataset
+
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
+
 

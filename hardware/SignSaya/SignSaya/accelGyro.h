@@ -17,8 +17,11 @@ float prevRoll = 0, prevPitch = 0, prevYaw = 0;
 
 class accelSensor {
 private:
+  long lastRun = millis();
+  angles result;
   Adafruit_MPU6050 mpu;
   sensors_event_t a, g, temp;
+  float angleX, angleY;
 
   void updateSensor() {
     mpu.getEvent(&a, &g, &temp);
@@ -142,7 +145,6 @@ public:
     float gyroData[3] = { data[3], data[4], data[5] };
     float dt = 0.01;  // Adjust this value according to your sampling rate
 
-    complementaryFilter(accelData, gyroData, dt);
 
     Serial.print("Roll: ");
     Serial.print(roll);
@@ -154,24 +156,30 @@ public:
     delay(10);  // Adjust delay as needed
   }
   // Function to apply complementary filter
-  void complementaryFilter(float* accelData, float* gyroData, float dt) {
-    // Calculate roll and pitch angles from accelerometer data
-    float accRoll = atan2(accelData[1], accelData[2]) * RAD_TO_DEG;
-    float accPitch = atan2(-accelData[0], sqrt(accelData[1] * accelData[1] + accelData[2] * accelData[2])) * RAD_TO_DEG;
+  angles complementaryFilter() {
+    // Complementary filter parameters (adjust these!)
+    float filterCoefficient = 0.98;  // Weight between 0 and 1
 
-    // Calculate roll and pitch angles from gyroscope data
-    float gyroRoll = prevRoll + gyroData[0] / GYRO_SENSITIVITY * dt;
-    float gyroPitch = prevPitch + gyroData[1] / GYRO_SENSITIVITY * dt;
-    float gyroYaw = prevYaw + gyroData[2] / GYRO_SENSITIVITY * dt;
+    // Get raw sensor data
+    accelSensor::updateSensor();
 
-    // Apply complementary filter to combine accelerometer and gyroscope data
-    roll = ALPHA * gyroRoll + BETA * accRoll;
-    pitch = ALPHA * gyroPitch + BETA * accPitch;
-    yaw = gyroYaw;  // Yaw estimation from gyroscope only (without magnetometer)
+    // Calculate angles from accelerometer (low pass - gravity)
+    float accAngleX = atan2(a.acceleration.y, a.acceleration.z) * 180.0 / M_PI;
+    float accAngleY = atan2(a.acceleration.x, a.acceleration.z) * 180.0 / M_PI;
 
-    // Update previous orientation values
-    prevRoll = roll;
-    prevPitch = pitch;
-    prevYaw = yaw;
+    long interval = millis() - lastRun;
+
+    // Integrate gyro data (high pass - rotational rate) to estimate angles
+    result.angleX += g.gyro.x * interval / 1000.0;
+    result.angleY += g.gyro.y * interval / 1000.0;
+    lastRun = millis();
+    // Complementary filter
+    result.angleX = filterCoefficient * result.angleX + (1.0 - filterCoefficient) * accAngleX;
+    result.angleY = filterCoefficient * result.angleY + (1.0 - filterCoefficient) * accAngleY;
+    ESP_LOGV("Complementary Filter", "%f, %f", result.angleX, result.angleY);
+
+
+
+    return result;
   }
 };
