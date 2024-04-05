@@ -10,6 +10,10 @@ import 'package:translator/translator.dart';
 
 import 'package:SignSaya/pages/history_page.dart';
 
+import 'package:SignSaya/pages/signsaya_database_config.dart';
+
+import 'package:intl/intl.dart';
+
 class TranslationPage extends StatefulWidget {
   const TranslationPage({Key? key}) : super(key: key);
 
@@ -20,7 +24,9 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   String? selectedLanguage; // pang stt
   SpeechToText _speechToText = SpeechToText(); // pang stt
-  TextEditingController _speechController = TextEditingController(); // pang stt
+  TextEditingController _speechController = TextEditingController(); // pang stt text fied controller
+
+  TextEditingController _topTextController = TextEditingController(); // pang taas na text field controller
 
   //improved dropdown starts here
   String? selectedLanguageTop; // For top dropdown
@@ -340,6 +346,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextField(
+                    controller: _topTextController,
                     decoration: const InputDecoration(
                       hintText: 'Enter text to translate',
                       border: OutlineInputBorder(),
@@ -501,6 +508,37 @@ class _TranslationPageState extends State<TranslationPage> {
                       translateText(text, selectedLanguageBottom ?? '',
                           'bottom'); // Update bottom dropdown translation
                     },
+                  ),
+                  //Save button for conversation
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final DateFormat formatter = DateFormat('MM-dd-yyyy');
+                        final String formattedDate = formatter.format(DateTime.now());
+                        final translation = {
+                          'date': formattedDate,
+                          'time': TimeOfDay.now().format(context),
+                          'question': _topTextController.text,
+                          'response': _speechController.text,
+                          'translated_response': translatedTextBottom
+                        };
+                        await SignSayaDatabase().saveTranslation(translation);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Conversation Saved!'),
+                          ),
+                        );
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue),
+                      ),
+                      child: const Text(
+                        "SAVE",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
                   Positioned(
                     right: screenSize.width * 0.025,
