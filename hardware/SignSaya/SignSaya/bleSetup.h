@@ -93,12 +93,12 @@ ESP_ERROR_CHECK(ret);
     BLEDevice::startAdvertising();
   }
 
-  void write(float* message, size_t length) {
+  void write(uint8_t* message) {
     long startTime = micros();
-    uint8_t data[sizeof(float) * length];
-    memcpy(data, message, sizeof(data));
+    // uint8_t data[sizeof(float) * length];
+    // memcpy(data, message, sizeof(data));
 
-    pTxCharacteristic->setValue(data, sizeof(data));
+    pTxCharacteristic->setValue(message, sizeof(uint8_t)*7);
     pTxCharacteristic->notify();
     ESP_LOGV("BLE WRITE TIME", "%d micros", (micros() - startTime));
   }

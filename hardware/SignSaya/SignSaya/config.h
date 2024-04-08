@@ -53,7 +53,7 @@ constexpr char bluetoothName[] = "SignSaya";
 // OTHER VARIABLES
 bool isWireBegun = false;
 constexpr int arrayLength = fingerSamplingRate * 1; //Length of array to be  averaged
-int maxFingerValue = 255; //max value of finger output for dataset
+uint8_t maxFingerValue = 255; //max value of finger output for dataset
 
 #define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
 #include "esp_log.h"

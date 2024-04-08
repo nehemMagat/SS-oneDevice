@@ -1,24 +1,15 @@
-struct angles {
-  float angleX;
-  float angleY;
-};
+typedef struct {
+  uint8_t angleX;
+  uint8_t angleY;
+} angleData_t;
 
 typedef struct {
-  float accelX;
-  float accelY;
-  float accelZ;
-  float gyroX;
-  float gyroY;
-  float gyroZ;
-} accelGyroData_t;
-
-typedef struct {
-  float pinky;
-  float ring;
-  float middle;
-  float index;
-  float thumb;
-  angles imuData;
+  uint8_t pinky;
+  uint8_t ring;
+  uint8_t middle;
+  uint8_t index;
+  uint8_t thumb;
+  angleData_t angles;
 } handData_t;
 
 struct fingerError {
