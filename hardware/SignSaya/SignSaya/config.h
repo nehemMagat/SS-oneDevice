@@ -32,21 +32,21 @@ constexpr uint8_t bluetoothIndicator = 8;
 constexpr uint8_t fingerQueueLength = 10;
 constexpr uint8_t handQueueLength = 15;
 constexpr uint8_t IMUQueueLength = 15;
-constexpr uint8_t IMUQueueWait = 5;
-constexpr uint8_t fingerQueueWait = 5;
+constexpr uint8_t IMUQueueWait = 1;
+constexpr uint8_t fingerQueueWait = 1;
 
 constexpr uint16_t fingerStackSize = 1280;
 constexpr uint16_t mpuStackSize = 2560;
 
-constexpr uint8_t fingerPriority = 2;
-constexpr uint8_t accelPriority = 2;
+constexpr uint8_t fingerPriority = 1;
+constexpr uint8_t accelPriority = 3;
 constexpr uint8_t blePriority = 4;
 
 constexpr uint8_t APPCORE = 1;
 constexpr uint8_t SYSTEMCORE = 0;
 
 constexpr uint8_t fingerSamplingRate = 60;  // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
-constexpr uint8_t IMUSamplingRate = 255;    // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
+constexpr uint8_t IMUSamplingRate = 200;    // hz, MAXIMUM ONLY, DOES NOT GUARRANTEE ACTUAL SAMPLING RATE DUE TO freeRTOS
 
 // BLUETOOTH VARIABLES
 constexpr char bluetoothName[] = "SignSaya";

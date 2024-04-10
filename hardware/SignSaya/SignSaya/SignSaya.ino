@@ -2,10 +2,10 @@
 #include "types.h"
 #include "config.h"
 #include "bleSetup.h"
-#include "accelGyro.h"
-// #include "dmpIMU.h"
+#include "dmpIMU.h"
 #include "fingers.h"
 
+#define configUSE_TASK_NOTIFICATIONS 1
 
 accelSensor ACCEL;
 bleInstance ble;
@@ -34,8 +34,8 @@ int missedIMUData = 0;
 
 long lastCountdown = 0;
 
-uint8_t core1Tel = 100;
-uint8_t core0Tel = 100;
+uint8_t core1Tel = 0;
+uint8_t core0Tel = 0;
 
 void pinkyFingerFunc(void *pvParameters);
 void ringFingerFunc(void *pvParameters);
@@ -51,10 +51,7 @@ void IRAM_ATTR sensorISR() {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
   // Send notification to task (replace with specific notification value as needed)
-  xTaskNotifyFromISR(imuTask, 1, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
-
-  // Required if you want notification processing to happen immediately
-  portYIELD_FROM_ISR();
+  vTaskNotifyGiveFromISR(imuTask, NULL);
 }
 
 void setup() {
@@ -94,8 +91,8 @@ void setup() {
   xTaskCreatePinnedToCore(&middleFingerFunc, "middleFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&indexFingerFunc, "indexFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&thumbFingerFunc, "thumbFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
-
   xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, &imuTask, APPCORE);
+
   xTaskCreatePinnedToCore(&dataParser, "dataPreparation", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&telPrint, "telPrint", 10240, NULL, 1, NULL, SYSTEMCORE);
@@ -121,7 +118,8 @@ void bleSender(void *pvParameters) {
                              message.index,
                              message.thumb,
                              message.angles.angleX,
-                             message.angles.angleY };
+                             message.angles.angleY,
+                             message.angles.angleZ };
       ble.write(sendData);
     }
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -150,17 +148,17 @@ void dataParser(void *pvParameters) {
 
 void accelGyroFunc(void *pvParameters) {
   uint32_t notificationValue;
+  int ctr = 0;
+  angleData_t imuData;
   for (;;) {
-    // if (xTaskNotifyWait(0, 0, &notificationValue, portMAX_DELAY) == pdTRUE) {
-    // Serial.println("Running AccelGyro");
-    // ACCEL.printData();
-    // }
-    angleData_t imuData = ACCEL.complementaryFilter();
+
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+    imuData = ACCEL.getData();
     if (xQueueSend(IMUQueue, &imuData, pdMS_TO_TICKS(IMUQueueWait)) != pdPASS) {
       missedIMUData++;
       // ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
     }
-    vTaskDelay(pdMS_TO_TICKS(1000 / IMUSamplingRate));
   }
 }
 
@@ -224,6 +222,7 @@ void telemetryCore0(void *pvParameters) {
       ctr = 0;
       lastRun = millis();
     } else {
+      //  Serial.println("CORE 0 IDLE");
       ctr++;
       vTaskDelay(pdMS_TO_TICKS(10));
     }
@@ -241,6 +240,7 @@ void telemetryCore1(void *pvParameters) {
       ctr = 0;
       lastRun = millis();
     } else {
+      Serial.println("CORE 1 IDLE");
       ctr++;
       vTaskDelay(pdMS_TO_TICKS(10));
     }
@@ -250,9 +250,9 @@ void telemetryCore1(void *pvParameters) {
 void telPrint(void *pvParameters) {
   for (;;) {
     Serial.print("SYSTEMCORE: ");
-    Serial.print(100 - core0Tel);
+    Serial.print(core0Tel);
     Serial.print("  APPCORE: ");
-    Serial.println(100 - core1Tel);
+    Serial.println(core1Tel);
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

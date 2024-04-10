@@ -98,7 +98,7 @@ ESP_ERROR_CHECK(ret);
     // uint8_t data[sizeof(float) * length];
     // memcpy(data, message, sizeof(data));
 
-    pTxCharacteristic->setValue(message, sizeof(uint8_t)*7);
+    pTxCharacteristic->setValue(message, sizeof(uint8_t)*8);
     pTxCharacteristic->notify();
     ESP_LOGV("BLE WRITE TIME", "%d micros", (micros() - startTime));
   }

@@ -1,6 +1,7 @@
 typedef struct {
   uint8_t angleX;
   uint8_t angleY;
+  uint8_t angleZ;
 } angleData_t;
 
 typedef struct {
