@@ -3,6 +3,7 @@
 #include "config.h"
 #include "bleSetup.h"
 #include "accelGyro.h"
+// #include "dmpIMU.h"
 #include "fingers.h"
 
 
@@ -27,9 +28,14 @@ QueueHandle_t thumbQueue;
 QueueHandle_t handQueue;
 QueueHandle_t IMUQueue;
 
+TaskHandle_t imuTask;
+
 int missedIMUData = 0;
 
 long lastCountdown = 0;
+
+uint8_t core1Tel = 100;
+uint8_t core0Tel = 100;
 
 void pinkyFingerFunc(void *pvParameters);
 void ringFingerFunc(void *pvParameters);
@@ -39,6 +45,17 @@ void thumbFingerFunc(void *pvParameters);
 void accelGyroFunc(void *pvParameters);
 void dataParser(void *pvParameters);
 void bleSender(void *pvParameters);
+
+// Interrupt Service Routine (ISR)
+void IRAM_ATTR sensorISR() {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+  // Send notification to task (replace with specific notification value as needed)
+  xTaskNotifyFromISR(imuTask, 1, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
+
+  // Required if you want notification processing to happen immediately
+  portYIELD_FROM_ISR();
+}
 
 void setup() {
   pinMode(HANDPIN, INPUT);
@@ -59,7 +76,9 @@ void setup() {
   char uBlCharArray[UBluetoothName.length() + 1];
   UBluetoothName.toCharArray(uBlCharArray, UBluetoothName.length() + 1);
   ble.begin(uBlCharArray);
-  ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN, IMU_INTERRUPT);
+
+  attachInterrupt(digitalPinToInterrupt(IMU_INTERRUPT), sensorISR, RISING);
 
   pinkyQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
   ringQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
@@ -130,11 +149,16 @@ void dataParser(void *pvParameters) {
 }
 
 void accelGyroFunc(void *pvParameters) {
+  uint32_t notificationValue;
   for (;;) {
+    // if (xTaskNotifyWait(0, 0, &notificationValue, portMAX_DELAY) == pdTRUE) {
+    // Serial.println("Running AccelGyro");
+    // ACCEL.printData();
+    // }
     angleData_t imuData = ACCEL.complementaryFilter();
     if (xQueueSend(IMUQueue, &imuData, pdMS_TO_TICKS(IMUQueueWait)) != pdPASS) {
       missedIMUData++;
-      ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
+      // ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
     }
     vTaskDelay(pdMS_TO_TICKS(1000 / IMUSamplingRate));
   }
@@ -220,5 +244,15 @@ void telemetryCore1(void *pvParameters) {
       ctr++;
       vTaskDelay(pdMS_TO_TICKS(10));
     }
+  }
+}
+
+void telPrint(void *pvParameters) {
+  for (;;) {
+    Serial.print("SYSTEMCORE: ");
+    Serial.print(100 - core0Tel);
+    Serial.print("  APPCORE: ");
+    Serial.println(100 - core1Tel);
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

@@ -35,7 +35,7 @@ public:
   accelSensor() {
   }
 
-  void begin(const int SDA_PIN, const int SCL_PIN) {
+  void begin(const int SDA_PIN, const int SCL_PIN, const int pin) {
     //if (!isWireBegun) {
     Wire.begin(SDA_PIN, SCL_PIN);
     //} else {
@@ -124,21 +124,22 @@ public:
   }
 
   void printData() {
-    updateSensor();
-    Serial.print("Accel: ");
-    Serial.print(a.acceleration.x);
-    Serial.print(", ");
-    Serial.print(a.acceleration.y);
-    Serial.print(", ");
-    Serial.print(a.acceleration.z);
-    Serial.print("  || Gyro: ");
-    Serial.print(a.gyro.x);
-    Serial.print(", ");
-    Serial.print(a.gyro.y);
-    Serial.print(", ");
-    Serial.print(a.gyro.z);
-    Serial.print("  || Chip Temperature: ");
-    Serial.println(temp.temperature);
+    // updateSensor();
+    // Serial.print("Accel: ");
+    // Serial.print(a.acceleration.x);
+    // Serial.print(", ");
+    // Serial.print(a.acceleration.y);
+    // Serial.print(", ");
+    // Serial.print(a.acceleration.z);
+    // Serial.print("  || Gyro: ");
+    // Serial.print(a.gyro.x);
+    // Serial.print(", ");
+    // Serial.print(a.gyro.y);
+    // Serial.print(", ");
+    // Serial.print(a.gyro.z);
+    // Serial.print("  || Chip Temperature: ");
+    // Serial.println(temp.temperature);
+    complementaryFilter();
   }
 
   // Function to apply complementary filter
