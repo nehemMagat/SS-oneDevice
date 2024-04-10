@@ -3,6 +3,7 @@
 #include "config.h"
 #include "bleSetup.h"
 #include "accelGyro.h"
+// #include "dmpIMU.h"
 #include "fingers.h"
 
 
@@ -27,9 +28,14 @@ QueueHandle_t thumbQueue;
 QueueHandle_t handQueue;
 QueueHandle_t IMUQueue;
 
+TaskHandle_t imuTask;
+
 int missedIMUData = 0;
 
 long lastCountdown = 0;
+
+uint8_t core1Tel = 100;
+uint8_t core0Tel = 100;
 
 void pinkyFingerFunc(void *pvParameters);
 void ringFingerFunc(void *pvParameters);
@@ -39,6 +45,17 @@ void thumbFingerFunc(void *pvParameters);
 void accelGyroFunc(void *pvParameters);
 void dataParser(void *pvParameters);
 void bleSender(void *pvParameters);
+
+// Interrupt Service Routine (ISR)
+void IRAM_ATTR sensorISR() {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+  // Send notification to task (replace with specific notification value as needed)
+  xTaskNotifyFromISR(imuTask, 1, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
+
+  // Required if you want notification processing to happen immediately
+  portYIELD_FROM_ISR();
+}
 
 void setup() {
   pinMode(HANDPIN, INPUT);
@@ -59,7 +76,9 @@ void setup() {
   char uBlCharArray[UBluetoothName.length() + 1];
   UBluetoothName.toCharArray(uBlCharArray, UBluetoothName.length() + 1);
   ble.begin(uBlCharArray);
-  ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN, IMU_INTERRUPT);
+
+  attachInterrupt(digitalPinToInterrupt(IMU_INTERRUPT), sensorISR, RISING);
 
   pinkyQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
   ringQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
@@ -76,12 +95,13 @@ void setup() {
   xTaskCreatePinnedToCore(&indexFingerFunc, "indexFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&thumbFingerFunc, "thumbFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
 
-  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, NULL, SYSTEMCORE);
+  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, &imuTask, APPCORE);
   xTaskCreatePinnedToCore(&dataParser, "dataPreparation", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
+  xTaskCreatePinnedToCore(&telPrint, "telPrint", 10240, NULL, 1, NULL, SYSTEMCORE);
 
-  // xTaskCreatePinnedToCore(&telemetryCore1, "telemetry1", 2048, NULL, 0, NULL, 1);
-  // xTaskCreatePinnedToCore(&telemetryCore0, "telemetry0", 2048, NULL, 0, NULL, 0);
+  xTaskCreatePinnedToCore(&telemetryCore1, "telemetry1", 2048, NULL, 0, NULL, 1);
+  xTaskCreatePinnedToCore(&telemetryCore0, "telemetry0", 2048, NULL, 0, NULL, 0);
 }
 
 void loop() {
@@ -96,12 +116,12 @@ void bleSender(void *pvParameters) {
   for (;;) {
     if ((int)xQueueReceive(handQueue, &message, 0) == pdTRUE) {
       uint8_t sendData[] = { message.pinky,
-                           message.ring,
-                           message.middle,
-                           message.index,
-                           message.thumb,
-                           message.angles.angleX,
-                           message.angles.angleY };
+                             message.ring,
+                             message.middle,
+                             message.index,
+                             message.thumb,
+                             message.angles.angleX,
+                             message.angles.angleY };
       ble.write(sendData);
     }
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -129,11 +149,16 @@ void dataParser(void *pvParameters) {
 }
 
 void accelGyroFunc(void *pvParameters) {
+  uint32_t notificationValue;
   for (;;) {
+    // if (xTaskNotifyWait(0, 0, &notificationValue, portMAX_DELAY) == pdTRUE) {
+    // Serial.println("Running AccelGyro");
+    // ACCEL.printData();
+    // }
     angleData_t imuData = ACCEL.complementaryFilter();
     if (xQueueSend(IMUQueue, &imuData, pdMS_TO_TICKS(IMUQueueWait)) != pdPASS) {
       missedIMUData++;
-      ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
+      // ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
     }
     vTaskDelay(pdMS_TO_TICKS(1000 / IMUSamplingRate));
   }
@@ -195,8 +220,7 @@ void telemetryCore0(void *pvParameters) {
   int ctr = 0;
   while (1) {
     if (millis() - lastRun >= 1000) {
-      Serial.print("0: ");
-      Serial.println(100-ctr);
+      core0Tel = ctr;
       ctr = 0;
       lastRun = millis();
     } else {
@@ -213,13 +237,22 @@ void telemetryCore1(void *pvParameters) {
   while (1) {
 
     if (millis() - lastRun >= 1000) {
-      Serial.print("1: ");
-      Serial.println(100-ctr);
+      core1Tel = ctr;
       ctr = 0;
       lastRun = millis();
     } else {
       ctr++;
       vTaskDelay(pdMS_TO_TICKS(10));
     }
+  }
+}
+
+void telPrint(void *pvParameters) {
+  for (;;) {
+    Serial.print("SYSTEMCORE: ");
+    Serial.print(100 - core0Tel);
+    Serial.print("  APPCORE: ");
+    Serial.println(100 - core1Tel);
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
