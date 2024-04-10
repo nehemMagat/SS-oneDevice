@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -41,16 +40,14 @@ class SignSayaDatabase {
   }
 
   Future<int> saveTranslation(Map<String, dynamic> translation) async {
-  var dbClient = await db;
-  return await dbClient.insert('translations', translation);
-}
-
+    var dbClient = await db;
+    return await dbClient.insert('translations', translation);
+  }
 
   Future<List<Map<String, dynamic>>> getAllTranslations() async {
-  var dbClient = await db;
-  return await dbClient.query('translations');
-}
-
+    var dbClient = await db;
+    return await dbClient.query('translations');
+  }
 
   Future<int> deleteTranslation(int id) async {
     var dbClient = await db;

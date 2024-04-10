@@ -4,7 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'bluetooth_connection.dart';
 import 'gloves_calibration.dart';
 
-import 'package:SignSaya/services/ble_scan.dart';
+//import 'package:SignSaya/services/ble_scan.dart'; changed to bluetooth_connection
 
 import 'package:translator/translator.dart';
 
@@ -24,9 +24,11 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   String? selectedLanguage; // pang stt
   SpeechToText _speechToText = SpeechToText(); // pang stt
-  TextEditingController _speechController = TextEditingController(); // pang stt text fied controller
+  TextEditingController _speechController =
+      TextEditingController(); // pang stt text fied controller
 
-  TextEditingController _topTextController = TextEditingController(); // pang taas na text field controller
+  TextEditingController _topTextController =
+      TextEditingController(); // pang taas na text field controller
 
   //improved dropdown starts here
   String? selectedLanguageTop; // For top dropdown
@@ -149,13 +151,13 @@ class _TranslationPageState extends State<TranslationPage> {
                 height: 30,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const BluetoothConnect()),
-                    // );
-                    begin();
-                    scan();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const FBPMain(), // pang route sa history page
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -515,7 +517,8 @@ class _TranslationPageState extends State<TranslationPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         final DateFormat formatter = DateFormat('MM-dd-yyyy');
-                        final String formattedDate = formatter.format(DateTime.now());
+                        final String formattedDate =
+                            formatter.format(DateTime.now());
                         final translation = {
                           'date': formattedDate,
                           'time': TimeOfDay.now().format(context),
