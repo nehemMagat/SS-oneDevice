@@ -6,10 +6,10 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double headerWidth = screenSize.width * 0.12;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Translation History'),
-      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: SignSayaDatabase().getAllTranslations(),
         builder: (context, snapshot) {
@@ -19,66 +19,268 @@ class HistoryPage extends StatelessWidget {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(fontFamily: 'Intro Rust', color: Colors.white),
+              ),
             );
           } else {
             final translations = snapshot.data!;
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-                columns: const [
-                  DataColumn(label: Text('Number')),
-                  DataColumn(
-                    label: Text('Date'),
-                    tooltip: 'Date',
-                  ),
-                  DataColumn(
-                    label: Text('Time'),
-                    tooltip: 'Time',
-                  ),
-                  DataColumn(
-                    label: Text('Question'),
-                    tooltip: 'Question',
-                  ),
-                  DataColumn(
-                    label: Text('Response'),
-                    tooltip: 'Response',
-                  ),
-                  DataColumn(
-                    label: Text('Translated Response'),
-                    tooltip: 'Translated Response',
-                  ),
-                  DataColumn(label: Text('')),
-                ],
-                rows: List<DataRow>.generate(
-                  translations.length,
-                  (index) {
-                    final translation = translations[index];
-                    return DataRow(cells: [
-                      DataCell(
-                        Text((index + 1).toString()),
-                      ),
-                      DataCell(
-                        Text(translation['date']),
-                      ),
-                      DataCell(
-                        Text(translation['time']),
-                      ),
-                      DataCell(
-                        Text(translation['question']),
-                      ),
-                      DataCell(
-                        Text(translation['response']),
-                      ),
-                      DataCell(
-                        Text(translation['translated_response']),
-                      ),
-                      DataCell(SizedBox()), // Empty cell, lalagyan ko sana ng delete button
-                    ]);
-                  },
+            return Stack(
+              children: [
+                Image.asset(
+                  'lib/images/backgroundTranslation.png',
+                  fit: BoxFit.cover,
+                  width: screenSize.width,
+                  height: screenSize.height,
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.only(top: screenSize.height * 0.23),
+                  child: DataTable(
+                    columnSpacing: 0, // Adjust column spacing
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.black)),
+                    columns: [
+                      DataColumn(
+                        label: SizedBox(
+                          width: headerWidth,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  0), // Adjust header padding here
+                              child: Text(
+                                'Number',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: headerWidth * 0.88,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  0), // Adjust header padding here
+                              child: Text(
+                                'Date',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        tooltip: 'Date',
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: headerWidth,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  0), // Adjust header padding here
+                              child: Text(
+                                'Time',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        tooltip: 'Time',
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: screenSize.width * 0.15,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  0), // Adjust header padding here
+                              child: Text(
+                                'Question',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        tooltip: 'Question',
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: screenSize.width * 0.18,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  4.0), // Adjust header padding here
+                              child: Text(
+                                'Response',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        tooltip: 'Response',
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: screenSize.width * 0.22,
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  4.0), // Adjust header padding here
+                              child: Text(
+                                'Translated \nResponse',
+                                style: TextStyle(
+                                    fontFamily: 'Intro Rust',
+                                    fontSize: 10,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        tooltip: 'Translated Response',
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: screenSize.width * 0.04,
+                          child: SizedBox(), // Empty cell for the last column
+                        ),
+                      ),
+                    ],
+                    rows: [], // Empty rows for now
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: screenSize.height * 0.2 +
+                          48.0), // Adjust top padding accordingly
+                  child: SizedBox(
+                    width: screenSize.width,
+                    height:
+                        screenSize.height - (screenSize.height * 0.2 + 48.0),
+                    child: ListView.builder(
+                      itemCount: translations.length,
+                      itemBuilder: (context, index) {
+                        final translation = translations[index];
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: headerWidth,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    (index + 1).toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: headerWidth,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    translation['date'],
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: headerWidth,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    translation['time'],
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: screenSize.width * 0.2,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    translation['question'],
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: screenSize.width * 0.2,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    translation['response'],
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: screenSize.width * 0.2,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      4.0), // Adjust cell padding here
+                                  child: Text(
+                                    translation['translated_response'],
+                                    style: TextStyle(
+                                        fontFamily: 'Intro Rust',
+                                        fontSize: 10,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             );
           }
         },
