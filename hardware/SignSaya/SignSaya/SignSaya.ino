@@ -76,12 +76,13 @@ void setup() {
   xTaskCreatePinnedToCore(&indexFingerFunc, "indexFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&thumbFingerFunc, "thumbFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
 
-  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, NULL, SYSTEMCORE);
+  xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, &imuTask, APPCORE);
   xTaskCreatePinnedToCore(&dataParser, "dataPreparation", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
+  xTaskCreatePinnedToCore(&telPrint, "telPrint", 10240, NULL, 1, NULL, SYSTEMCORE);
 
-  // xTaskCreatePinnedToCore(&telemetryCore1, "telemetry1", 2048, NULL, 0, NULL, 1);
-  // xTaskCreatePinnedToCore(&telemetryCore0, "telemetry0", 2048, NULL, 0, NULL, 0);
+  xTaskCreatePinnedToCore(&telemetryCore1, "telemetry1", 2048, NULL, 0, NULL, 1);
+  xTaskCreatePinnedToCore(&telemetryCore0, "telemetry0", 2048, NULL, 0, NULL, 0);
 }
 
 void loop() {
@@ -96,12 +97,12 @@ void bleSender(void *pvParameters) {
   for (;;) {
     if ((int)xQueueReceive(handQueue, &message, 0) == pdTRUE) {
       uint8_t sendData[] = { message.pinky,
-                           message.ring,
-                           message.middle,
-                           message.index,
-                           message.thumb,
-                           message.angles.angleX,
-                           message.angles.angleY };
+                             message.ring,
+                             message.middle,
+                             message.index,
+                             message.thumb,
+                             message.angles.angleX,
+                             message.angles.angleY };
       ble.write(sendData);
     }
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -195,8 +196,7 @@ void telemetryCore0(void *pvParameters) {
   int ctr = 0;
   while (1) {
     if (millis() - lastRun >= 1000) {
-      Serial.print("0: ");
-      Serial.println(100-ctr);
+      core0Tel = ctr;
       ctr = 0;
       lastRun = millis();
     } else {
@@ -213,8 +213,7 @@ void telemetryCore1(void *pvParameters) {
   while (1) {
 
     if (millis() - lastRun >= 1000) {
-      Serial.print("1: ");
-      Serial.println(100-ctr);
+      core1Tel = ctr;
       ctr = 0;
       lastRun = millis();
     } else {
