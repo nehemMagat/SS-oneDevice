@@ -165,13 +165,19 @@ class HistoryPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
+                  padding: /*EdgeInsets.only(
                       top: screenSize.height * 0.2 +
-                          48.0), // Adjust top padding accordingly
+                          48.0), */ // Adjust top padding accordingly
+                      EdgeInsets.fromLTRB(
+                    0, // left
+                    screenSize.height * 0.2 + 48.0, // top
+                    0, // right
+                    screenSize.height * 0.1, // bottom
+                  ),
                   child: SizedBox(
                     width: screenSize.width,
                     height:
-                        screenSize.height - (screenSize.height * 0.2 + 48.0),
+                        screenSize.height - (screenSize.height * 0.2 + 49.0),
                     child: ListView.builder(
                       itemCount: translations.length,
                       itemBuilder: (context, index) {
@@ -277,6 +283,24 @@ class HistoryPage extends StatelessWidget {
                           ],
                         );
                       },
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: screenSize.height * 0.92,
+                  left: screenSize.width * 0.38,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF011F4B),
+                      shape: const CircleBorder(),
+                    ),
+                    child: Image.asset(
+                      'lib/images/historyBack.png',
+                      width: 50,
+                      height: 50,
                     ),
                   ),
                 ),

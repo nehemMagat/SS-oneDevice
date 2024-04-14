@@ -37,6 +37,7 @@ flutter:
     - lib/images/delBttn.png
     - lib/images/micBttn.png
     - lib/images/informationPage.png
+    - lib/images/historyBack.png
   uses-material-design: true
   fonts:
     - family: Intro Rust
