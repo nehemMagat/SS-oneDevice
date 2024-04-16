@@ -199,7 +199,7 @@ class HistoryPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ViewHistoryPage(
-                      number: translations.indexOf(translation) + 1,
+                      number: translation['id'],
                       date: translation['date'],
                       time: translation['time'],
                       question: translation['question'],

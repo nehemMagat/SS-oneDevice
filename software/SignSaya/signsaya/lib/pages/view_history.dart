@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:SignSaya/pages/signsaya_database_config.dart';
 
 class ViewHistoryPage extends StatelessWidget {
   final int number;
@@ -56,22 +57,39 @@ class ViewHistoryPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF011F4B),
-                          shape: const CircleBorder(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _showDeleteConfirmation(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF011F4B),
+                            shape: const CircleBorder(),
+                          ),
+                          child: Image.asset(
+                            'lib/images/delBttn.png',
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
-                        child: Image.asset(
-                          'lib/images/historyBack.png',
-                          width: 50,
-                          height: 50,
+                        SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF011F4B),
+                            shape: const CircleBorder(),
+                          ),
+                          child: Image.asset(
+                            'lib/images/historyBack.png',
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -111,6 +129,81 @@ class ViewHistoryPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Confirmation"),
+        content: Text("Are you sure you want to delete this conversation?"),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              print("Delete conversation pressed");
+              await _deleteConversation(context);
+            },
+            child: Text("Delete"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteConversation(BuildContext context) async {
+    try {
+      print("Deleting conversation with number: $number");
+      final db = SignSayaDatabase();
+      final result = await db.deleteTranslation(number);
+      print("Delete result: $result");
+      _showDeleteSuccessDialog(context, number);
+    } catch (e) {
+      print("Error deleting conversation: $e");
+      _showDeleteErrorDialog(context);
+    }
+  }
+
+  void _showDeleteSuccessDialog(BuildContext context, int deletedNumber) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Conversation Deleted"),
+        content: Text("The conversation has been deleted."),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Pop the dialog
+              Navigator.pop(context); // Pop the ViewHistoryPage
+            },
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Error Deleting Conversation"),
+        content: Text("An error occurred while deleting the conversation."),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("OK"),
+          ),
+        ],
+      ),
     );
   }
 
