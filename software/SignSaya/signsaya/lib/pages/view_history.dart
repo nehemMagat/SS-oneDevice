@@ -20,46 +20,249 @@ class ViewHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('View History'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Number: $number',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Date: $date',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Time: $time',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Question: $question',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Response: $response',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Translated Response: $translatedResponse',
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
+    Size screenSize = MediaQuery.of(context).size;
+
+    return Stack(
+      children: [
+        Image.asset(
+          'lib/images/backgroundTranslation.png',
+          fit: BoxFit.cover,
+          width: screenSize.width,
+          height: screenSize.height,
         ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _buildMessage(
+                              'You', question, time, Colors.blue, Icons.person),
+                          _buildTranslatedResponse(
+                              'Receiver',
+                              translatedResponse,
+                              response,
+                              time,
+                              Colors.black,
+                              Icons.account_circle),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF011F4B),
+                          shape: const CircleBorder(),
+                        ),
+                        child: Image.asset(
+                          'lib/images/historyBack.png',
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: screenSize.height * 0.23,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        bottom: BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        date,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMessage(String sender, String message, String? subtext,
+      Color color, IconData iconData) {
+    return Align(
+      alignment: sender == 'You' ? Alignment.centerRight : Alignment.centerLeft,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+              left: sender == 'You' ? 20 : 16,
+              right: sender == 'You' ? 16 : 20,
+              top: 8,
+              bottom: 8,
+            ),
+            margin: EdgeInsets.only(
+              bottom: 8,
+              right: sender == 'You' ? 60 : 0,
+              left: sender == 'You' ? 0 : 60,
+              top: sender == 'You' ? 255 : 0,
+            ),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(24),
+                topRight: const Radius.circular(24),
+                bottomLeft: sender == 'You'
+                    ? const Radius.circular(24)
+                    : const Radius.circular(0),
+                bottomRight: sender == 'You'
+                    ? const Radius.circular(0)
+                    : const Radius.circular(24),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                if (subtext != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      subtext,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: sender == 'You' ? 0 : 16,
+            child: CircleAvatar(
+              backgroundColor: sender == 'You' ? Colors.blue : Colors.black,
+              radius: 25,
+              child: Icon(
+                iconData,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTranslatedResponse(String receiver, String translatedResponse,
+      String response, String time, Color color, IconData iconData) {
+    return Align(
+      alignment:
+          receiver == 'Receiver' ? Alignment.centerLeft : Alignment.centerRight,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+              left: receiver == 'Receiver' ? 16 : 20,
+              right: receiver == 'Receiver' ? 20 : 16,
+              top: 8,
+              bottom: 8,
+            ),
+            margin: EdgeInsets.only(
+              right: receiver == 'Receiver' ? 0 : 60,
+              left: receiver == 'Receiver' ? 60 : 0,
+            ),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(24),
+                topRight: const Radius.circular(24),
+                bottomRight: receiver == 'Receiver'
+                    ? const Radius.circular(24)
+                    : const Radius.circular(0),
+                bottomLeft: receiver == 'Receiver'
+                    ? const Radius.circular(0)
+                    : const Radius.circular(24),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  response,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  translatedResponse,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  time,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: receiver == 'Receiver' ? 0 : 16,
+            child: CircleAvatar(
+              backgroundColor:
+                  receiver == 'Receiver' ? Colors.black : Colors.black,
+              radius: 25,
+              child: Icon(
+                iconData,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
