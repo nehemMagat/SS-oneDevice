@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:SignSaya/pages/signsaya_database_config.dart';
+import 'package:SignSaya/pages/view_history.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -7,7 +8,6 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    final double headerWidth = screenSize.width * 0.12;
 
     return Scaffold(
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -20,7 +20,7 @@ class HistoryPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
-                'Error: ${snapshot.error}',
+                'Error fetching data. Please try again later.',
                 style: TextStyle(fontFamily: 'Intro Rust', color: Colors.white),
               ),
             );
@@ -35,255 +35,30 @@ class HistoryPage extends StatelessWidget {
                   height: screenSize.height,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: screenSize.height * 0.23),
-                  child: DataTable(
-                    columnSpacing: 0, // Adjust column spacing
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.black)),
-                    columns: [
-                      DataColumn(
-                        label: SizedBox(
-                          width: headerWidth,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  0), // Adjust header padding here
-                              child: Text(
-                                'Number',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
+                  padding: EdgeInsets.only(top: screenSize.height * 0.25),
+                  child: Column(
+                    children: [
+                      _buildHeaderRow(screenSize),
+                      SizedBox(
+                        height: screenSize.height *
+                            0.6149, // Set a fixed height for the SizedBox
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                children: translations.map((translation) {
+                                  return _buildDataRow(context, screenSize,
+                                      translations, translation);
+                                }).toList(),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: headerWidth * 0.88,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  0), // Adjust header padding here
-                              child: Text(
-                                'Date',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Date',
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: headerWidth,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  0), // Adjust header padding here
-                              child: Text(
-                                'Time',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Time',
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: screenSize.width * 0.15,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  0), // Adjust header padding here
-                              child: Text(
-                                'Question',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Question',
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: screenSize.width * 0.18,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  4.0), // Adjust header padding here
-                              child: Text(
-                                'Response',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Response',
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: screenSize.width * 0.22,
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  4.0), // Adjust header padding here
-                              child: Text(
-                                'Translated \nResponse',
-                                style: TextStyle(
-                                    fontFamily: 'Intro Rust',
-                                    fontSize: 10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Translated Response',
-                      ),
-                      DataColumn(
-                        label: SizedBox(
-                          width: screenSize.width * 0.04,
-                          child: SizedBox(), // Empty cell for the last column
                         ),
                       ),
                     ],
-                    rows: [], // Empty rows for now
-                  ),
-                ),
-                Padding(
-                  padding: /*EdgeInsets.only(
-                      top: screenSize.height * 0.2 +
-                          48.0), */ // Adjust top padding accordingly
-                      EdgeInsets.fromLTRB(
-                    0, // left
-                    screenSize.height * 0.2 + 48.0, // top
-                    0, // right
-                    screenSize.height * 0.1, // bottom
-                  ),
-                  child: SizedBox(
-                    width: screenSize.width,
-                    height:
-                        screenSize.height - (screenSize.height * 0.2 + 49.0),
-                    child: ListView.builder(
-                      itemCount: translations.length,
-                      itemBuilder: (context, index) {
-                        final translation = translations[index];
-                        return Row(
-                          children: [
-                            SizedBox(
-                              width: headerWidth,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    (index + 1).toString(),
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: headerWidth,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    translation['date'],
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: headerWidth,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    translation['time'],
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenSize.width * 0.2,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    translation['question'],
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenSize.width * 0.2,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    translation['response'],
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenSize.width * 0.2,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      4.0), // Adjust cell padding here
-                                  child: Text(
-                                    translation['translated_response'],
-                                    style: TextStyle(
-                                        fontFamily: 'Intro Rust',
-                                        fontSize: 10,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
                   ),
                 ),
                 Positioned(
@@ -308,6 +83,149 @@ class HistoryPage extends StatelessWidget {
             );
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildHeaderRow(Size screenSize) {
+    final double headerWidth = screenSize.width * 0.12;
+
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.white),
+          top: BorderSide(color: Colors.white),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: headerWidth * 1.5,
+            height: screenSize.height * 0.05,
+            child: const Center(
+              child: Text(
+                'Date',
+                style: TextStyle(
+                  fontFamily: 'Intro Rust',
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: headerWidth * 4,
+            child: const Center(
+              child: Text(
+                'Question',
+                style: TextStyle(
+                  fontFamily: 'Intro Rust',
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            child: Center(
+              child: Text(
+                '',
+                style: TextStyle(
+                  fontFamily: 'Intro Rust',
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: screenSize.width * 0.04),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDataRow(
+      BuildContext context,
+      Size screenSize,
+      List<Map<String, dynamic>> translations,
+      Map<String, dynamic> translation) {
+    final double headerWidth = screenSize.width * 0.12;
+
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.white),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: headerWidth * 1.5,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  translation['date'],
+                  style: const TextStyle(
+                    fontFamily: 'Intro Rust',
+                    fontSize: 10,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: headerWidth * 3.8,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  translation['question'],
+                  style: const TextStyle(
+                    fontFamily: 'Intro Rust',
+                    fontSize: 10,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: screenSize.width * 0.3,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewHistoryPage(
+                      number: translations.indexOf(translation) + 1,
+                      date: translation['date'],
+                      time: translation['time'],
+                      question: translation['question'],
+                      response: translation['response'],
+                      translatedResponse: translation['translated_response'],
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                minimumSize:
+                    Size(screenSize.width * 0.25, 35), // Adjust button size
+              ),
+              child: const Text(
+                'Tap to View',
+                style: TextStyle(
+                  fontFamily: 'Intro Rust',
+                  fontSize: 10,
+                  color: Color.fromARGB(255, 0, 16, 29),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: screenSize.width * 0.04),
+        ],
       ),
     );
   }
