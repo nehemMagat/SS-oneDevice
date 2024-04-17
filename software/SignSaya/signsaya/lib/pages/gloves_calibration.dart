@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:SignSaya/pages/FBP_screens/widgets/characteristic_tile.dart';
 
 class GlovesCalibration extends StatefulWidget {
-  const GlovesCalibration({Key? key}) : super(key: key);
-
   @override
   _GlovesCalibrationState createState() => _GlovesCalibrationState();
 }
@@ -11,52 +10,49 @@ class _GlovesCalibrationState extends State<GlovesCalibration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            'lib/images/backgroundTranslation.png',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Positioned(
-            top: 650,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SizedBox(
-                width: 250,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+      appBar: AppBar(
+        title: Text('Gloves Calibration'),
+      ),
+      body: StreamBuilder<List<int>>(
+        stream: CharacteristicTile.sensorValuesStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // Use the latest sensor values to display in the UI
+            List<int> sensorValues = snapshot.data!;
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Sensor Values: $sensorValues'),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement start recording logic
+                      print('Start Recording');
+                    },
+                    child: Text('Start Recording'),
                   ),
-                  child: const Text(
-                    'FINISH',
-                    style: TextStyle(
-                      fontFamily: 'Intro Rust',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      color: Colors.black,
-                    ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement stop recording logic
+                      print('Stop Recording');
+                    },
+                    child: Text('Stop Recording'),
                   ),
-                ),
+                ],
               ),
-            ),
-          ),
-          const Positioned(
-              child: Center(
-            child: Text(
-              "CALIBRATION THINGY HERE/ PALITAN NALANG BG IF DI KAILANGAN",
-              style: TextStyle(color: Colors.white),
-            ),
-          ))
-        ],
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            return Center(
+              child: Text('Waiting for sensor values...'),
+            );
+          }
+        },
       ),
     );
   }
