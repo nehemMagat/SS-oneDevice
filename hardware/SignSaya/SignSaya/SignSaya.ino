@@ -129,6 +129,7 @@ void bleSender(void *pvParameters) {
 void dataParser(void *pvParameters) {
   handData_t machineData;
   for (;;) {
+    unsigned long start = micros();
     //Receive data from gloves queue
     int pinkyStatus = xQueueReceive(pinkyQueue, &machineData.pinky, fingerQueueWait);
     int ringStatus = xQueueReceive(ringQueue, &machineData.ring, fingerQueueWait);
@@ -142,6 +143,7 @@ void dataParser(void *pvParameters) {
     } else {
       // Serial.println("No Data to be saved");
     }
+    Serial.println(micros() - start);
     vTaskDelay(pdMS_TO_TICKS(1));
   }
 }
@@ -252,7 +254,9 @@ void telPrint(void *pvParameters) {
     Serial.print("SYSTEMCORE: ");
     Serial.print(core0Tel);
     Serial.print("  APPCORE: ");
-    Serial.println(core1Tel);
+    Serial.print(core1Tel);
+    Serial.print("  Free Memory: ");
+    Serial.println(esp_get_free_heap_size());
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
