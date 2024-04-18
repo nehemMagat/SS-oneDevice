@@ -77,9 +77,9 @@ VectorInt16 aaReal;   // [x, y, z]            gravity-free accel sensor measurem
 VectorInt16 aaWorld;  // [x, y, z]            world-frame accel sensor measurements
 VectorFloat gravity;  // [x, y, z]            gravity vector
 float euler[3];       // [psi, theta, phi]    Euler angle container
-float ypr[3];  
-uint8_t mappedYPR[3]; 
-const float constantMulti =  180 / M_PI;      // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+float ypr[3];
+uint8_t mappedYPR[3];
+const float constantMulti = 180 / M_PI;  // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
 // packet structure for InvenSense teapot demo
 uint8_t teapotPacket[14] = { '$', 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, '\r', '\n' };
@@ -191,7 +191,7 @@ public:
       angles.angleX = static_cast<uint8_t>(255.0f * (((ypr[0] * constantMulti) + 180) / 360));
       angles.angleY = static_cast<uint8_t>(255.0f * (((ypr[1] * constantMulti) + 180) / 360));
       angles.angleZ = static_cast<uint8_t>(255.0f * (((ypr[2] * constantMulti) + 180) / 360));
-    return angles;
+      return angles;
     }
     return angles;
   }

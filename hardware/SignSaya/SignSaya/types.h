@@ -1,8 +1,9 @@
 typedef struct {
-  uint8_t angleX;
-  uint8_t angleY;
-  uint8_t angleZ;
-} angleData_t;
+  uint8_t q0;
+  uint8_t q1;
+  uint8_t q2;
+  uint8_t q3;
+} quaternion_t;
 
 typedef struct {
   uint8_t pinky;
@@ -10,7 +11,7 @@ typedef struct {
   uint8_t middle;
   uint8_t index;
   uint8_t thumb;
-  angleData_t angles;
+  quaternion_t angles;
 } handData_t;
 
 struct fingerError {

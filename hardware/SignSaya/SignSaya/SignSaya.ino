@@ -2,10 +2,9 @@
 #include "types.h"
 #include "config.h"
 #include "bleSetup.h"
-#include "dmpIMU.h"
+// #include "dmpIMU.h"
+#include "imutest.h"
 #include "fingers.h"
-
-#define configUSE_TASK_NOTIFICATIONS 1
 
 accelSensor ACCEL;
 bleInstance ble;
@@ -29,6 +28,7 @@ QueueHandle_t handQueue;
 QueueHandle_t IMUQueue;
 
 TaskHandle_t imuTask;
+TaskHandle_t imuChecker;
 
 int missedIMUData = 0;
 
@@ -45,14 +45,6 @@ void thumbFingerFunc(void *pvParameters);
 void accelGyroFunc(void *pvParameters);
 void dataParser(void *pvParameters);
 void bleSender(void *pvParameters);
-
-// Interrupt Service Routine (ISR)
-void IRAM_ATTR sensorISR() {
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-  // Send notification to task (replace with specific notification value as needed)
-  vTaskNotifyGiveFromISR(imuTask, NULL);
-}
 
 void setup() {
   pinMode(HANDPIN, INPUT);
@@ -75,7 +67,7 @@ void setup() {
   ble.begin(uBlCharArray);
   ACCEL.begin(I2C_SDA_PIN, I2C_SCL_PIN, IMU_INTERRUPT);
 
-  attachInterrupt(digitalPinToInterrupt(IMU_INTERRUPT), sensorISR, RISING);
+  // attachInterrupt(digitalPinToInterrupt(IMU_INTERRUPT), sensorISR, RISING);
 
   pinkyQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
   ringQueue = xQueueCreate(fingerQueueLength, sizeof(uint8_t));
@@ -91,7 +83,9 @@ void setup() {
   xTaskCreatePinnedToCore(&middleFingerFunc, "middleFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&indexFingerFunc, "indexFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
   xTaskCreatePinnedToCore(&thumbFingerFunc, "thumbFunc", fingerStackSize, NULL, fingerPriority, NULL, APPCORE);
+
   xTaskCreatePinnedToCore(&accelGyroFunc, "mpuFunc", mpuStackSize, NULL, accelPriority, &imuTask, APPCORE);
+  xTaskCreatePinnedToCore(&checkIMUData, "mpuChecker", 1024, NULL, accelPriority, &imuChecker, APPCORE);
 
   xTaskCreatePinnedToCore(&dataParser, "dataPreparation", 10240, NULL, blePriority, NULL, SYSTEMCORE);
   xTaskCreatePinnedToCore(&bleSender, "dataTransmission", 10240, NULL, blePriority, NULL, SYSTEMCORE);
@@ -117,9 +111,10 @@ void bleSender(void *pvParameters) {
                              message.middle,
                              message.index,
                              message.thumb,
-                             message.angles.angleX,
-                             message.angles.angleY,
-                             message.angles.angleZ };
+                             message.angles.q0,
+                             message.angles.q1,
+                             message.angles.q2,
+                             message.angles.q3 };
       ble.write(sendData);
     }
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -129,7 +124,7 @@ void bleSender(void *pvParameters) {
 void dataParser(void *pvParameters) {
   handData_t machineData;
   for (;;) {
-    unsigned long start = micros();
+    // unsigned long start = micros();
     //Receive data from gloves queue
     int pinkyStatus = xQueueReceive(pinkyQueue, &machineData.pinky, fingerQueueWait);
     int ringStatus = xQueueReceive(ringQueue, &machineData.ring, fingerQueueWait);
@@ -143,15 +138,26 @@ void dataParser(void *pvParameters) {
     } else {
       // Serial.println("No Data to be saved");
     }
-    Serial.println(micros() - start);
+    // Serial.println(micros() - start);
     vTaskDelay(pdMS_TO_TICKS(1));
+  }
+}
+
+void checkIMUData(void *pvParameters) {
+  for (;;) {
+    if (ACCEL.checkDataReady()) {
+      xTaskNotifyGive(imuTask);
+      ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    } else {
+      vTaskDelay(pdMS_TO_TICKS(10));
+    }
   }
 }
 
 void accelGyroFunc(void *pvParameters) {
   uint32_t notificationValue;
   int ctr = 0;
-  angleData_t imuData;
+  quaternion_t imuData;
   for (;;) {
 
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -159,8 +165,8 @@ void accelGyroFunc(void *pvParameters) {
     imuData = ACCEL.getData();
     if (xQueueSend(IMUQueue, &imuData, pdMS_TO_TICKS(IMUQueueWait)) != pdPASS) {
       missedIMUData++;
-      // ESP_LOGD("Missed Gyro Data", "%f, %f", imuData.angleX, imuData.angleY);
     }
+    xTaskNotifyGive(imuChecker);
   }
 }
 
