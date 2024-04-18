@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
 import 'utils/snackbar.dart';
 
 class BluetoothOffScreen extends StatelessWidget {
@@ -50,19 +48,50 @@ class BluetoothOffScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+
     return ScaffoldMessenger(
       key: Snackbar.snackBarKeyA,
       child: Scaffold(
-        backgroundColor: Colors.lightBlue,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              buildBluetoothOffIcon(context),
-              buildTitle(context),
-              if (Platform.isAndroid) buildTurnOnButton(context),
-            ],
-          ),
+        backgroundColor:
+            Colors.transparent, // Set background color to transparent
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              'lib/images/backgroundTranslation.png',
+              fit: BoxFit.cover,
+            ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  buildBluetoothOffIcon(context),
+                  buildTitle(context),
+                  if (Platform.isAndroid) buildTurnOnButton(context),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: screenSize.height *
+                  0.1, // Adjust the bottom position as needed
+              left: screenSize.width * 0.38, // Center horizontally
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF011F4B),
+                  shape: const CircleBorder(),
+                ),
+                child: Image.asset(
+                  'lib/images/historyBack.png',
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

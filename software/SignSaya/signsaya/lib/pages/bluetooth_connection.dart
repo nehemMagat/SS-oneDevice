@@ -47,7 +47,7 @@ class _FBPMainState extends State<FBPMain> {
         : BluetoothOffScreen(adapterState: _adapterState);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Existing App Integration')),
+      //appBar: AppBar(title: const Text('Existing App Integration')),
       body: screen,
     );
   }
