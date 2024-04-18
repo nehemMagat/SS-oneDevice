@@ -10,41 +10,55 @@ class InformationPage extends StatefulWidget {
 class _InformationPageState extends State<InformationPage> {
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final double buttonWidth = screenSize.width * 0.8;
+    final Size screenSize = MediaQuery.of(context).size; // Get screen size
+    final double buttonWidth = screenSize.width * 0.8; // Calculate button width
     return Scaffold(
+      // Display a scaffold
       body: Stack(
+        // Stack to overlay widgets
         children: [
+          // List of children widgets
           Image.asset(
-            'lib/images/informationPage.png',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+            // Display background image
+            'lib/images/informationPage.png', // Image asset path
+            fit: BoxFit.cover, // Cover the entire screen
+            width: double.infinity, // Set image width to fill the screen
+            height: double.infinity, // Set image height to fill the screen
           ),
           Positioned(
-            top: screenSize.height * 0.935,
-            left: 0,
-            right: 0,
+            // Position the button at the bottom
+            top: screenSize.height * 0.935, // Position from the top
+            left: 0, // Align with the left edge
+            right: 0, // Align with the right edge
             child: Center(
+              // Center the button horizontally
               child: SizedBox(
-                width: buttonWidth * 0.65,
-                height: 35,
+                // Define a fixed-size box for the button
+                width: buttonWidth * 0.65, // Set button width
+                height: 35, // Set button height
                 child: ElevatedButton(
+                  // Display an ElevatedButton widget
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Define button onPressed callback
+                    Navigator.pop(context); // Navigate back to previous screen
                   },
                   style: ElevatedButton.styleFrom(
+                    // Define button style
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      // Apply rounded rectangle shape to button
+                      borderRadius:
+                          BorderRadius.circular(20), // Set border radius
                     ),
                   ),
                   child: const Text(
-                    'I UNDERSTAND',
+                    // Set button label text
+                    'I UNDERSTAND', // Button label
                     style: TextStyle(
-                      fontFamily: 'Intro Rust',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      color: Colors.black,
+                      // Set text style
+                      fontFamily: 'Intro Rust', // Set font family
+                      fontWeight: FontWeight.bold, // Set font weight
+                      fontSize: 10, // Set font size
+                      color: Colors.black, // Set text color
                     ),
                   ),
                 ),

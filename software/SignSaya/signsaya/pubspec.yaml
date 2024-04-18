@@ -1,33 +1,32 @@
-name: SignSaya
-description: "A system capable of interpreting these hand signals with Filipino Sign Language by providing technological solution that is specifically tailored to address frequently asked question for deaf tourists to enhance inclusivity through a multilingual feature."
+name: SignSaya # Name of the package
+description: "A system capable of interpreting these hand signals with Filipino Sign Language by providing technological solution that is specifically tailored to address frequently asked question for deaf tourists to enhance inclusivity through a multilingual feature." # Description of the package
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.1+1
-environment:
-  sdk: '>=3.2.3 <4.0.0'
+version: 1.0.1+1 # Version number of the package
+environment: # Environment configuration for the package
+  sdk: '>=3.2.3 <4.0.0' # Minimum and maximum SDK versions required
 
-dependencies:
-  flutter:
+dependencies: # Dependencies required for the package
+  flutter: # Flutter SDK dependency
     sdk: flutter
-  permission_handler: ^10.0.0
-  flutter_blue_plus: 
-    # Add the version specified in the second pubspec.yaml file
-    version: ^1.32.1
-  scoped_model: ^2.0.0
-  speech_to_text: ^6.1.1
-  cupertino_icons: ^1.0.2
-  translator: ^1.0.0
-  sqflite: ^2.0.0
-  path: ^1.8.0
-  intl: ^0.17.0
+  permission_handler: ^10.0.0 # Permission handler dependency
+  flutter_blue_plus:  # Flutter Blue Plus dependency
+    version: ^1.32.1 # Version number of Flutter Blue Plus
+  scoped_model: ^2.0.0 # Scoped model dependency
+  speech_to_text: ^6.1.1 # Speech to text dependency
+  cupertino_icons: ^1.0.2 # Cupertino icons dependency
+  translator: ^1.0.0 # Translator dependency
+  sqflite: ^2.0.0 # Sqflite dependency
+  path: ^1.8.0 # Path dependency
+  intl: ^0.17.0 # Intl dependency
 
-dev_dependencies:
-  flutter_test:
+dev_dependencies: # Development dependencies
+  flutter_test: # Flutter test dependency
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.0 # Flutter lints dependency
 
-flutter:
-  assets:
-    - lib/images/backgroundHome.png
+flutter: # Flutter specific configuration
+  assets: # Asset configuration
+    - lib/images/backgroundHome.png # List of asset files
     - lib/images/backgroundTranslation.png
     - lib/images/infoButton.png
     - lib/images/settingsButton.png
@@ -38,24 +37,24 @@ flutter:
     - lib/images/micBttn.png
     - lib/images/informationPage.png
     - lib/images/historyBack.png
-  uses-material-design: true
-  fonts:
-    - family: Intro Rust
-      fonts:
-        - asset: fonts/IntroRust-Base.otf
-    - family: Anton
-      fonts:
-        - asset: fonts/Anton-Regular.ttf
-    - family: Sans
-      fonts:
-        - asset: fonts/Sans.ttf
+  uses-material-design: true # Indicate that the package uses material design
+  fonts: # Font configuration
+    - family: Intro Rust # Font family name
+      fonts: # List of font files for the family
+        - asset: fonts/IntroRust-Base.otf # Font file asset
+    - family: Anton # Font family name
+      fonts: # List of font files for the family
+        - asset: fonts/Anton-Regular.ttf # Font file asset
+    - family: Sans # Font family name
+      fonts: # List of font files for the family
+        - asset: fonts/Sans.ttf # Font file asset
 
-  plugin:
-    platforms:
-      android:
-        package: com.lib.flutter_blue_plus
-        pluginClass: FlutterBluePlusPlugin
-      ios:
-        pluginClass: FlutterBluePlusPlugin
-      macos:
-        pluginClass: FlutterBluePlusPlugin
+  plugin: # Plugin configuration for platform-specific plugins
+    platforms: # Platform-specific configurations
+      android: # Android platform configuration
+        package: com.lib.flutter_blue_plus # Package name for Android
+        pluginClass: FlutterBluePlusPlugin # Plugin class name for Android
+      ios: # iOS platform configuration
+        pluginClass: FlutterBluePlusPlugin # Plugin class name for iOS
+      macos: # macOS platform configuration
+        pluginClass: FlutterBluePlusPlugin # Plugin class name for macOS
