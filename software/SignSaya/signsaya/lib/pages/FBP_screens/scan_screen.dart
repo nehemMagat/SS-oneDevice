@@ -145,15 +145,22 @@ class _ScanScreenState extends State<ScanScreen> {
     return ScaffoldMessenger(
       key: Snackbar.snackBarKeyB,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Find Devices'),
-        ),
         body: RefreshIndicator(
           onRefresh: onRefresh,
-          child: ListView(
-            children: <Widget>[
-              ..._buildSystemDeviceTiles(context),
-              ..._buildScanResultTiles(context),
+          child: Stack(
+            children: [
+              Image.asset(
+                'lib/images/backgroundTranslation.png',
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+              ),
+              ListView(
+                children: <Widget>[
+                  ..._buildSystemDeviceTiles(context),
+                  ..._buildScanResultTiles(context),
+                ],
+              ),
             ],
           ),
         ),
