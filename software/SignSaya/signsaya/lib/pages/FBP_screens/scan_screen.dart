@@ -144,27 +144,51 @@ class _ScanScreenState extends State<ScanScreen> {
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       key: Snackbar.snackBarKeyB,
-      child: Scaffold(
-        body: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: Stack(
-            children: [
-              Image.asset(
-                'lib/images/backgroundTranslation.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
-              ListView(
-                children: <Widget>[
-                  ..._buildSystemDeviceTiles(context),
-                  ..._buildScanResultTiles(context),
-                ],
-              ),
-            ],
+      child: Stack(
+        children: [
+          Image.asset(
+            'lib/images/backgroundTranslation.png',
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
           ),
-        ),
-        floatingActionButton: buildScanButton(context),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: RefreshIndicator(
+              onRefresh: onRefresh,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.22,
+                  left: 16.0,
+                ),
+                child: ListView(
+                  children: <Widget>[
+                    ..._buildSystemDeviceTiles(context),
+                    ..._buildScanResultTiles(context),
+                  ],
+                ),
+              ),
+            ),
+            floatingActionButton: buildScanButton(context),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 16.0,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  'lib/images/historyBack.png',
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
