@@ -50,6 +50,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       if (mounted) {
         setState(() {});
       }
+      
     });
 
     _mtuSubscription = widget.device.mtu.listen((value) {
@@ -72,6 +73,9 @@ class _DeviceScreenState extends State<DeviceScreen> {
       if (mounted) {
         setState(() {});
       }
+    });
+    Future.delayed(const Duration(seconds:2),(){
+      onDiscoverServicesPressed();
     });
   }
 

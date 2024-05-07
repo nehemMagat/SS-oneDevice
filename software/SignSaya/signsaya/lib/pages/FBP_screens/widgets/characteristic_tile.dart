@@ -48,6 +48,10 @@ import 'package:flutter/material.dart';
           print(value); // dito ko makukuha
         }
       });
+
+      Future.delayed(const Duration(seconds: 1), () {
+      onSubscribePressed(context);
+    });
     }
 
     @override

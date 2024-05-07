@@ -67,6 +67,15 @@ class _ScanScreenState extends State<ScanScreen> {
     if (mounted) {
       setState(() {});
     }
+
+    for (ScanResult result in _scanResults) {
+        if (result.device.remoteId ==
+            const DeviceIdentifier("DC:DA:0C:16:C8:AD")) {
+          //print("Found the Mac Device");
+          onConnectPressed(result.device);
+        }
+      }
+
   }
 
   Future onStopPressed() async {
