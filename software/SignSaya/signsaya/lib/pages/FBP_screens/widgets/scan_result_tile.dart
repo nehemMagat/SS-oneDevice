@@ -75,10 +75,11 @@ class _ScanResultTileState extends State<ScanResultTile> {
           Text(
             widget.result.device.platformName,
             overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white),
           ),
           Text(
             widget.result.device.remoteId.str,
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
           )
         ],
       );
@@ -91,8 +92,8 @@ class _ScanResultTileState extends State<ScanResultTile> {
     return ElevatedButton(
       child: isConnected ? const Text('OPEN') : const Text('CONNECT'),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       onPressed:
           (widget.result.advertisementData.connectable) ? widget.onTap : null,
@@ -129,7 +130,7 @@ class _ScanResultTileState extends State<ScanResultTile> {
     var adv = widget.result.advertisementData;
     return ExpansionTile(
       title: _buildTitle(context),
-      leading: Text(widget.result.rssi.toString()),
+      leading: Text(widget.result.rssi.toString(), style: const TextStyle(color: Colors.white)),
       trailing: _buildConnectButton(context),
       children: <Widget>[
         if (adv.advName.isNotEmpty) _buildAdvRow(context, 'Name', adv.advName),
