@@ -1,3 +1,5 @@
+//import 'dart:js_util';
+
 import 'package:flutter/material.dart'; // Importing material package for Flutter UI components
 import 'package:speech_to_text/speech_recognition_result.dart'; // Importing speech recognition result class
 import 'package:speech_to_text/speech_to_text.dart'; // Importing speech to text package
@@ -15,6 +17,10 @@ import 'package:SignSaya/pages/signsaya_database_config.dart';
 
 // Importing internationalization package for date formatting
 import 'package:intl/intl.dart';
+
+import 'package:SignSaya/pages/FBP_screens/widgets/characteristic_tile.dart';
+
+//new lines for stream builder
 
 class TranslationPage extends StatefulWidget {
   // Define TranslationPage widget as a StatefulWidget
@@ -35,6 +41,24 @@ class _TranslationPageState extends State<TranslationPage> {
 
   TextEditingController _topTextController =
       TextEditingController(); // Text field controller for top text
+
+  final listOfQuestions = <String>[
+    'How can I get from here',
+    'What transportation are available here?',
+    'Where is the nearest restroom?',
+    'Is this the correct place? Should I go straight or turn right at the next intersection?',
+    'What are the nicest place to visit around here',
+    'Where can I find a good place to eat?',
+    'Is the food good?',
+    'What are the best spots in the vicinity',
+    'Where can I find a cheap hotel',
+    'How much is the fare?',
+    'Where can I find the terminal here',
+    'Where can I find the best souvenir shop?',
+    'What landmark is close to this place',
+    'Could you take a picture of me',
+    'Thank you',
+  ];
 
   // Improved dropdown starts here
   String? selectedLanguageTop; // Selected language for top dropdown
@@ -77,6 +101,8 @@ class _TranslationPageState extends State<TranslationPage> {
           !_isContainerVisible; // Toggle the visibility of the container
     });
   }
+
+  //int? _selectedIndex;
 
   @override
   void initState() {
@@ -474,17 +500,61 @@ class _TranslationPageState extends State<TranslationPage> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold), // Label style
                   ),
-                  SizedBox(height: screenSize.height * 0.0355), // Spacer
                   Text(
                     // Display translated text
                     translatedTextTop, // Translated text content
                     textAlign: TextAlign.center, // Center align text
                   ),
                   SizedBox(height: screenSize.height * 0.0355), // Spacer
+                  StreamBuilder<List<int>>(
+                    stream: CharacteristicTile.sensorValuesStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final sensorValues = snapshot.data!;
+                        if (sensorValues.isNotEmpty) {
+                          final index = sensorValues[
+                              0]; // Assuming sensorValues has only one value for simplicity
+                          if (index >= 0 && index < listOfQuestions.length) {
+                            final finalQuestion = listOfQuestions[index];
+                            //_topTextController.text = finalQuestion;
+                            WidgetsBinding.instance!.addPostFrameCallback((_) {
+                              _topTextController.text =
+                                  finalQuestion; // Set finalQuestion to TextField
+                            });
+                            // return Text(
+                            //   // Display sensor values
+                            //   finalQuestion,
+                            //   textAlign: TextAlign.center, // Center align text
+                            // );
+                          } else {
+                            return const Text(
+                              // Display error message if index is out of range
+                              'Can not identify the question',
+                              textAlign: TextAlign.center, // Center align text
+                            );
+                          }
+                        }
+                      }
+
+                      // Handle other snapshot states
+                      if (snapshot.hasError) {
+                        return Text(
+                          // Display error message
+                          'Error: ${snapshot.error}',
+                          textAlign: TextAlign.center, // Center align text
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+
+                  SizedBox(height: screenSize.height * 0.0355), // Spacer
                 ],
               ),
             ),
           ),
+
 // Translation Image Button
           Positioned(
             // Position the translation image button
@@ -735,7 +805,7 @@ class _TranslationPageState extends State<TranslationPage> {
                       children: [
                         // List of children widgets
                         SizedBox(
-                            height: screenSize.height * 0.0334), // Empty space
+                            height: screenSize.height * 0.0355), // Empty space
                         const Text(
                           // Display label for translated text
                           'Translated Text:', // Label text
@@ -743,12 +813,13 @@ class _TranslationPageState extends State<TranslationPage> {
                               fontWeight: FontWeight.bold), // Set text style
                         ),
                         SizedBox(
-                            height: screenSize.height * 0.0334), // Empty space
+                            height: screenSize.height * 0.0355), // Empty space
                         Text(
                           // Display translated text
                           translatedTextBottom, // Translated text
                           textAlign: TextAlign.center, // Align text to center
                         ),
+                        SizedBox(height: screenSize.height * 0.0355), 
                       ],
                     ),
                   ),

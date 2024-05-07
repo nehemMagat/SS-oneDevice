@@ -40,46 +40,46 @@ class _GlovesCalibrationState extends State<GlovesCalibration> {
         if (!await _documentsDirectory.exists()) {
           await _documentsDirectory.create(recursive: true);
         }
-        print("Documents directory: ${_documentsDirectory.path}");
+        //print("Documents directory: ${_documentsDirectory.path}");
       } else {
         // Handle iOS or other platforms (limited access)
-        print("Platform-specific handling for documents directory needed for iOS or other platforms.");
+        //print("Platform-specific handling for documents directory needed for iOS or other platforms.");
       }
     } else {
-      print("Storage permission is required to save files.");
+      //print("Storage permission is required to save files.");
     }
   }
 
-  Future<void> _startRecording() async {
-    if (!_isRecording) {
-      setState(() {
-        _isRecording = true;
-      });
+  // Future<void> _startRecording() async {
+  //   if (!_isRecording) {
+  //     setState(() {
+  //       _isRecording = true;
+  //     });
 
-      _sensorValuesSubscription = CharacteristicTile.sensorValuesStream.listen((sensorValues) {
-        if (_isRecording) {
-          _recordSensorValue(sensorValues);
-        }
-      });
-    }
-  }
+  //     _sensorValuesSubscription = CharacteristicTile.sensorValuesStream.listen((sensorValues) {
+  //       if (_isRecording) {
+  //         _recordSensorValue(sensorValues);
+  //       }
+  //     });
+  //   }
+  // }
 
-  Future<void> _stopRecording() async {
-    _sensorValuesSubscription.cancel();
-    setState(() {
-      _isRecording = false;
-    });
+  // Future<void> _stopRecording() async {
+  //   _sensorValuesSubscription.cancel();
+  //   setState(() {
+  //     _isRecording = false;
+  //   });
 
-    // Save recorded sensor values to file
-    if (_documentsDirectory != null) {
-      final file = File('${_documentsDirectory.path}/$_fileName');
-      final csvLines = _recordedSensorValues.map((values) => values.join(",")).join("\n");
-      await file.writeAsString(csvLines, mode: FileMode.append);
-      _recordedSensorValues.clear();
-    } else {
-      print("Documents directory is not set.");
-    }
-  }
+  //   // Save recorded sensor values to file
+  //   if (_documentsDirectory != null) {
+  //     final file = File('${_documentsDirectory.path}/$_fileName');
+  //     final csvLines = _recordedSensorValues.map((values) => values.join(",")).join("\n");
+  //     await file.writeAsString(csvLines, mode: FileMode.append);
+  //     _recordedSensorValues.clear();
+  //   } else {
+  //     print("Documents directory is not set.");
+  //   }
+  // }
 
   void _recordSensorValue(List<int> sensorValues) {
     _recordedSensorValues.add(sensorValues);
@@ -102,10 +102,10 @@ class _GlovesCalibrationState extends State<GlovesCalibration> {
                 children: [
                   Text('Sensor Values: $sensorValues'),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _isRecording ? _stopRecording : _startRecording,
-                    child: Text(_isRecording ? 'Stop Recording' : 'Start Recording'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: _isRecording ? _stopRecording : _startRecording,
+                  //   child: Text(_isRecording ? 'Stop Recording' : 'Start Recording'),
+                  // ),
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),

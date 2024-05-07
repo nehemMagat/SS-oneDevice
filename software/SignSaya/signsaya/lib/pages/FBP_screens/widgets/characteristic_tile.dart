@@ -3,7 +3,8 @@
   import 'dart:async';
   import 'dart:math';
 
-  import 'package:flutter/material.dart';
+  import 'package:SignSaya/pages/translation_page.dart';
+import 'package:flutter/material.dart';
   import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
   import 'package:SignSaya/pages/gloves_calibration.dart';
@@ -103,7 +104,7 @@
     // Navigate to GlovesCalibration page
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GlovesCalibration()),
+      MaterialPageRoute(builder: (context) => const TranslationPage()),
     );
   } catch (e) {
     Snackbar.show(ABC.c, prettyException("Subscribe Error:", e),
