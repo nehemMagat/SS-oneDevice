@@ -43,21 +43,21 @@ class _TranslationPageState extends State<TranslationPage> {
       TextEditingController(); // Text field controller for top text
 
   final listOfQuestions = <String>[
-    'How can I get from here',
+    'How can I get there',
     'What transportation are available here?',
     'Where is the nearest restroom?',
     'Is this the correct place? Should I go straight or turn right at the next intersection?',
-    'What are the nicest place to visit around here',
-    'Where can I find a good place to eat?',
+    'What are the nice places to visit here',
+    'Where can I find a place to eat?',
     'Is the food good?',
     'What are the best spots in the vicinity',
     'Where can I find a cheap hotel',
     'How much is the fare?',
-    'Where can I find the terminal here',
+    'Where can I find the terminal',
     'Where can I find the best souvenir shop?',
     'What landmark is close to this place',
-    'Could you take a picture of me',
-    'Thank you',
+    'Could you take a picture of me'
+    ,
   ];
 
   // Improved dropdown starts here
